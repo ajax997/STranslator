@@ -1,0 +1,304 @@
+
+html, body{
+    height: 100vmax;
+}
+
+.login {
+    text-align: right;
+    font-family: 'Baloo 2', cursive;
+}
+
+.dialogdemoThemeInheritance .container {
+    text-align: center;
+}
+
+.profile_button {
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-sizing: border-box;
+    text-align: center;
+    letter-spacing: 1px;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: .5px;
+    line-height: 24px;
+    text-transform: uppercase;
+    padding: 3px 16px;
+    width: 100px;
+}
+
+#login_icon {
+    background-color: rgba(12, 98, 35, 0.8);
+    color: #fff;
+}
+
+#register_icon {
+    background-color: rgba(12, 98, 35, 0.8);
+    color: #fff;
+}
+
+.tag_selected_cell {
+    background-color: #5fa07f !important;
+    color: aliceblue !important;
+
+}
+
+.tag-header {
+    font-family: 'Baloo 2', cursive;
+    font-size: 15px;
+    color: #0e0e0e73;
+    margin-bottom: 10px;
+}
+
+#logo-img {
+    width: 70px;
+    margin-bottom: 10px;
+}
+
+.site-header {
+    font-family: 'Baloo 2', cursive;
+    padding-top: 10px;
+    padding-left: 100px;
+    border-bottom: 2px solid #878787;
+    background-color: #ffffff;
+    /* background-image: linear-gradient(141deg, #9fb8ad 0%, #1fc8db 51%, #2cb5e8 75%); */
+    opacity: 0.95;
+}
+
+#site-title {
+    line-height: 35px;
+    text-align: left;
+    font-size: 30px;
+    margin-bottom: 5px;
+    font-family: 'Titan One', cursive !important;
+}
+
+.select-tag {
+
+    padding: 15px 50px 15px 50px;
+    margin-top: 15px;
+    border-radius: 5px;
+    border-left: 1px solid rgba(0, 0, 0, 0.38);
+    border-right: 1px solid rgba(0, 0, 0, 0.38);
+}
+
+.tag-content {
+    text-align: left;
+}
+
+.inner-content-left {
+    padding-left: 0px !important;
+    padding-right: 5px !important;
+}
+
+.inner-content-right {
+    padding-left: 5px !important;
+    padding-right: 0px !important;
+}
+
+.display-content {
+    padding: 20px 20px 20px 20px;
+    width: 100%;
+    min-height: 200px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 25px;
+
+}
+
+.close-button {
+    position: relative;
+    text-align: right;
+}
+
+.number-counts {
+    position: absolute;
+    /* left: 22px; */
+    border: 1px solid rgba(0, 0, 0, 0.38);
+    border-radius: 100%;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 14px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.38);
+}
+
+.number-counts-dest {
+    margin-left: -27px !important;
+}
+
+.tag {
+    background: #ddd;
+    /* border: 2px solid #6f6f6f; */
+    color: #6f6f6f;
+    font-weight: bold;
+    padding: 5px 15px 5px 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    align-items: center;
+    width: auto;
+    margin: 5px;
+    display: inline-block;
+    cursor: default;
+}
+
+.n_same_m_class {
+    margin: 2px 3px 2px 3px;
+    border-radius: 3px;
+    text-decoration: none;
+    align-items: center;
+    width: auto;
+    cursor: pointer;
+}
+
+.n_same_m_class:hover {
+    color: lightslategrey;
+}
+
+.tag:hover {
+    background: rgb(156, 156, 156);
+    text-decoration: none;
+}
+
+.synonynms {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.display-content-additional {
+    padding: 35px 35px 35px 35px;
+
+    border-right: 1px black;
+    font-family: 'Baloo 2', cursive;
+    font-size: 15px;
+}
+
+#main-input {
+    height:auto;
+    max-width:600px;
+    width:100%;
+    background:#fff;
+    border-radius:3px;
+    border:none;
+    min-height: 110px;
+    resize: none;
+}
+
+
+.context-buttons {
+    height: 30px;
+    position: absolute;
+    bottom: 0;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.pos-header {
+    color: rgb(171, 157, 0);
+    font-weight: bold;
+    margin-left: -10px;
+    margin-bottom: 10px;
+}
+
+#main-content {
+    border: 3px solid #ccc;
+    border-radius: 5px;
+    box-shadow: black;
+    box-shadow:0px 0px 5px 1px rgba(0,0,0,0.2);
+}
+
+#additional-content {
+    margin-top: 15px;
+    margin-bottom: 100px;
+
+
+
+}
+
+.display-content-additional {
+    border: 1px solid rgb(233, 214, 155);
+    border-radius: 5px;
+    box-shadow: black;
+
+}
+.text-prediction{
+    font-size: 15px;
+    margin-bottom: 25px;
+}
+
+[contenteditable]:focus {
+    outline: 0px solid transparent;
+}
+
+.waiting-for-result {
+    color: #878787;
+}
+
+.tooltip {
+
+    font-family: 'Baloo 2', cursive;
+    font-size: 12px;
+
+
+}
+
+.tooltip-inner {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+
+.page-content {
+    margin-top: 60px;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+#main-header {
+
+    height: 50px;
+    border-bottom: 1px solid #ccc;
+}
+
+.output-operators {
+    /* height: 100% !important; */
+    background-color: rgb(242, 242, 242);
+    border-left: 3px solid #6f6f6f;
+}
+
+.row {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+.r_header {
+    font-family: 'Baloo 2', cursive;
+    font-size: 16px;
+    margin-left: -10px;
+    padding-bottom: 10px;
+    color: #929292;
+}
+
+.r_header_word {
+    font-style: italic;
+    font-weight: bold;
+    color: #4c4c4c;
+}
+
+#wiki_img_url_css {
+    max-width: 300px;
+    max-height: 100%;
+}
+.md-toolbar-tools{
+    background-color: #000000 !important;
+}
+.md-toolbar-tools{
+    height: 38px !important;
+}
+md-toolbar.md-default-theme:not(.md-menu-toolbar), md-toolbar:not(.md-menu-toolbar){
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.md-dialog{
+    max-width: 100% !important;
+    width: 800px !important;
+}

@@ -1,0 +1,32 @@
+<md-dialog ng-model='dialog_header' aria-label="dialog_header">
+    <form ng-cloak>
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <h2>[[dialog_header]]</h2>
+          <span flex></span>
+          <md-button class="md-icon-button" ng-click="cancel()">
+            x
+          </md-button>
+        </div>
+      </md-toolbar>
+  
+      <md-dialog-content>
+        <div class="md-dialog-content row" ng-model="wiki_img_url">
+            <div ng-class="{'col-md-5':wiki_img_url.length != 0, 'blank_class':wiki_img_url.length == 0}">
+                <img id="wiki_img_url_css" src="[[wiki_img_url]]" >
+            </div>
+            <div ng-class="{'col-md-12':wiki_img_url.length == 0, 'col-md-7': wiki_img_url.length != 0}">
+                <p ng-bind-html="wiki_content">
+            </p></div>
+            
+        </div>
+      </md-dialog-content>
+  
+      <md-dialog-actions layout="row">
+        <md-button ng-model="wiki_content_href" href="[[wiki_content_href]]" target="_blank" md-autofocus>
+          More on Wikipedia
+        </md-button>
+        <span flex></span>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
