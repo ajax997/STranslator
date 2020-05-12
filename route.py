@@ -61,8 +61,8 @@ def get():
 @app.route("/signup", methods=['POST'])
 def signup_user():
     data = request.get_json()
-    ghelper.register_user(
-        data['username'], hash_password(data['password']), "")
+    ghelper.register_user(data['username'], hash_password(data['password']), "")
+    session['current_login_user'] = data['username']
     return data['username']
 
 
