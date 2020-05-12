@@ -1,0 +1,90 @@
+<md-dialog ng-model='dialog_header' aria-label="dialog_header">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>[[dialog_header]]</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <a style="font-family: fontawesome !important;" class="far fa-times-circle"></a>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+
+            <div class="limiter">
+                <div class="container-login100">
+                    <div class="wrap-login100 p-l-55 p-r-55">
+                        <form class="login100-form validate-form">
+                            <span class="login100-form-title p-b-20">
+                                [[login_action]]
+                            </span>
+
+                            <div class="wrap-input100 validate-input" data-validate="Username is reauired">
+                                <span class="label-input100">Username</span>
+                                <input class="input100" type="text" name="username" placeholder="Type your username" ng-model='identity_username'>
+                                <!-- <span class="focus-input100" data-symbol="&#xf206;"></span> -->
+                            </div>
+
+                            <div class="wrap-input100 validate-input m-b-10" data-validate="Password is required">
+                                <span class="label-input100">Password</span>
+                                <input class="input100" type="password" name="pass" placeholder="Type your password" ng-model='identity_password'>
+                                <!-- <span class="focus-input100" data-symbol="&#xf190;"></span> -->
+                            </div>
+
+                            <div class="wrap-input100 validate-input m-b-10" data-validate="Retype Password is required" ng-if="login_action!='Login'">
+                                <span class="label-input100">Retype Password</span>
+                                <input class="input100" type="password" name="pass" placeholder="Retype your password" ng-modal="identity_password_retype">
+                                <!-- <span class="focus-input100" data-symbol="&#xf190;"></span> -->
+                            </div>
+                            <div ng-if="login_action!='Login'">
+                                <br>
+                            </div>
+                            <div class="text-right p-t-8 p-b-31" ng-if="login_action=='Login'">
+                                <a href="#">
+                                    Forgot password?
+                                </a>
+                            </div>
+
+                            <div class="container-login100-form-btn">
+                                <div class="wrap-login100-form-btn">
+                                    <div class="login100-form-bgbtn"></div>
+                                    <button class="login100-form-btn" ng-click="loginOrSignup()">
+                                        [[login_action]]
+                                    </button>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="txt1 text-center p-t-30 p-b-10">
+                                <span>
+                                    Or Sign Up Using
+                                </span>
+                            </div>
+
+                            <div class="flex-c-m">
+                                <a href="#" class="login100-social-item bg1">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                                <a href="#" class="login100-social-item bg3">
+                                    <i class="fa fa-google"></i>
+                                </a>
+                            </div>
+
+                            <div class="flex-col-c p-t-10">
+                                <span class="txt1 p-b-17">
+                                    Or Sign Up Using
+                                </span>
+
+                                <a ng-click='switchLoginMethod($event)' class="txt2">
+                                    [[login_method]]
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </md-dialog-content>
+    </form>
+</md-dialog>

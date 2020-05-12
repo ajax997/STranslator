@@ -2,8 +2,20 @@
 from graphdb import nGraph
 from autocorrect import Speller
 import json
+import re
 
 g = nGraph("bolt://localhost:7687", "ajax997", "lumia1020")
+
+def no_accent_vietnamese(input_str):
+    s1 = u'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝàáâãèéêìíòóôõùúýĂăĐđĨĩŨũƠơƯưẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹ'
+    s0 = u'AAAAEEEIIOOOOUUYaaaaeeeiioooouuyAaDdIiUuOoUuAaAaAaAaAaAaAaAaAaAaAaAaEeEeEeEeEeEeEeEeIiIiOoOoOoOoOoOoOoOoOoOoOoOoUuUuUuUuUuUuUuYyYyYyYy'
+    s = ''
+    for c in input_str:
+        if c in s1:
+            s += s0[s1.index(c)]
+        else:
+            s += c
+    return s
 
 def __merge(vn_res1, vn_res2):
     meta_pos = [x for x in set(vn_res1['meta']['pos']) | set(vn_res2['meta']['pos'])]
@@ -26,8 +38,8 @@ def process_isolated_node(w, labels):
 
     except:
         pass
-    print(type(labels))
     direct_node = g.get_direct_meaning_node(w, "LANG_POS_MEANING")
+    print(direct_node)
     local_m = get_vn_meaning(w)
     eng_m = get_eng_meaning(direct_node)
     derivetive_m = get_vn_meaning(direct_node)
@@ -35,8 +47,10 @@ def process_isolated_node(w, labels):
     
      
 def process_not_found_node(w):
+    w = no_accent_vietnamese(w)
     spell = Speller(lang='en')
-    return {'prediction': spell(w), 'm_eng': {}, 'm_vn': {}}
+    predicted = spell(w)
+    return {'prediction': '' if predicted == w else predicted, 'm_eng': {}, 'm_vn': {}}
 
 def get_vn_meaning(v_w, pos = ''):
     return_content = {}
@@ -56,17 +70,22 @@ def get_vn_meaning(v_w, pos = ''):
             s_pos.append(x)
             if x != 'ObjectEntity':
                 pos_avai.add(x)
-        for x in node['inline_expl']:
-            exp_html+='; '+x
-        for x in node['tags']:
-            exp_html+='; '+x
-        s['inline_expl'] = exp_html[2:] if exp_html != '' else ''
+        if "inline_expl" in node:
+            for x in node['inline_expl']:
+                exp_html+='; '+x
+            s['inline_expl'] = exp_html[2:] if exp_html != '' else ''
+        
+        if 'tags' in node:
+            for x in node['tags']:
+                exp_html+='; '+x
+            for t in node['tags']:
+                tag_avai.add(t)
         s['pos'] = s_pos
         s['m'] = node['objectEntity']
         s['freq'] = relationship['freq']
         s['tags'] = node['tags']
         if 'EXPLANATION' not in s_pos:
-            n_with_same_m = g.run_raw_query("match (n:"+':'.join(x for x in s_pos)+"{objectEntity:'"+s['m']+"'})<-[:TRANS_EN_VI]-(v) return v.objectEntity as r")[1]
+            n_with_same_m = g.run_raw_query("match (n:"+':'.join(x for x in s_pos)+"{objectEntity:\""+s['m']+"\"})<-[:TRANS_EN_VI]-(v) return v.objectEntity as r")[1]
             same_m = set()
             for no in n_with_same_m.records():
                 same_m.add(no['r'])
@@ -75,8 +94,7 @@ def get_vn_meaning(v_w, pos = ''):
         else:
             s['n_same_m'] = []
 
-        for t in node['tags']:
-            tag_avai.add(t)
+        
 
         arr_r.append(s)
     meta['notes'] = []
@@ -114,3 +132,16 @@ def get_eng_meaning(e_w):
         meta['pos'] = [x for x in pos_avai]
         meta['r_header'] = e_w
     return {'meta': meta , 'jsondata':return_arr}
+
+def check_user_exist(username):
+    if g.check_user_name(username):
+        return True
+    return False
+    
+def check_login(username, password):
+    if g.check_login_credential(username, password):
+        return True
+    else:
+        return False
+def register_user(username, password, email):
+    return g.create_user(username, password, email)

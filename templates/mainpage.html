@@ -4,9 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/mainpage.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main_login.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/util.css') }}">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <!-- Latest compiled and minified JavaScript -->
@@ -18,13 +23,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
     </script>
-
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> -->
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"
         integrity="sha256-tyfWW2LtJQNI+l3F0h6xDV/ij6Mfn8lwSKHWOsmEgXM=" crossorigin="anonymous"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap-tpls.min.js"></script> -->
     <link href="https://fonts.googleapis.com/css?family=Titan+One&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Baloo+2&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
@@ -39,7 +39,7 @@
     <title>STranslator</title>
 </head>
 
-<body ng-app='stranslator'>
+<body ng-app='stranslator' ng-controller='autoPopulateData' data-ng-init="init()">
 
     <div class="site-header">
         <div class='row'>
@@ -48,19 +48,20 @@
             </div>
             <div class="col-6"><span id="site-title">Smart Translator</span></div>
             <div class='col-5'>
-                <div ng-if='false' class='profile'>
-
+                <div class='profile' ng-if='is_user_login'>
+                    <span>[[logged_username]]</span>
+                    <span><i class="fa fa-sign-out" aria-hidden="true" ng-click="user_logout()"></i><md-tooltip md-direction="bottom">Logout</md-tooltip></span>
+                    
                 </div>
-                <div class='login'>
-                    <button class="profile_button" id='login_icon'">Login</button>
-                    <button class=" profile_button" id='register_icon'>Register</button>
+                <div class='login' ng-if="!is_user_login">
+                    <a class="profile_button" id='login_icon' ng-click="showLogin($event)">Login / Sign Up</a>
                 </div>
 
             </div>
         </div>
 
     </div>
-    <div class='page-content' ng-controller='autoPopulateData' data-ng-init="init()">
+    <div class='page-content' >
         <div id='main-content'>
             <div id='main-header'>
             </div>
@@ -69,8 +70,9 @@
 
                     <div class='display-content' ng-model='initValue'>
 
-                        <textarea ng-keyup="autoExpand($event)" id='main-input' contenteditable="true" ng-change='inputChange(input_text)'
-                            ng-model='input_text' ng-model-options='{ debounce: 1000 }'>
+                        <textarea ng-keyup="autoExpand($event)" id='main-input' contenteditable="true"
+                            ng-change='inputChange(input_text)' ng-model='input_text'
+                            ng-model-options='{ debounce: 1000 }'>
                         [[input_text]]
                         </textarea>
                         <div class='text-prediction' ng-if='prediction_text != ""'>
@@ -79,7 +81,29 @@
                         </div>
                         <div class='pronunciation' ng-if='pronunciation != "" '></div>
                         <div class='context-buttons'>
-                            [[input_text.length==0?0:input_text.length +'/'+500 ]]
+                            <div class='row'>
+                                <div class="col-md-6 source-audio-icons">
+                                    <span>
+                                        <img class="source-button" ng-if="input_text != ''"
+                                            src="{{ url_for('static', filename='images/speak.png') }} "
+                                            style="width: 20px; height: 20px;" alt="">
+                                        <md-tooltip md-direction="top" ng-if="k.inline_expl!=''">
+                                            Speak</md-tooltip>
+                                    </span>
+                                    <span>
+                                        <img class="source-button" ng-if="input_text != ''" ng-click="showAdvanced($event)"
+                                            src="{{ url_for('static', filename='images/link.png') }} "
+                                            style="width: 15px; height: 15px;" alt="">
+                                        <md-tooltip md-direction="top" ng-if="k.inline_expl!=''">
+                                            Search for references</md-tooltip>
+                                    </span>
+                                </div>
+                                <div class="col-md-6 text-length">
+                                    <span>[[input_text.length==0? 0:input_text.length +'/'+500 ]]</span>
+
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -91,8 +115,17 @@
                         <div class='translated-result' ng-model='translatedResult'>
                             [[translatedResult]]
                         </div>
-                        <div class='context-buttons'>
-                            0
+                        <div class='context-buttons dest-icon'>
+                            <div class='row'>
+                                <div class="col-md-6">
+
+                                </div>
+                                <div class="col-md-6">
+
+
+                                </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -101,21 +134,21 @@
         <div ng-if='translate_result.length > 0'>
             <div class='select-tag' ng-model='g_tags' ng-if='g_tags.length != 0'>
                 <div>
-                    <span class='tag-header' ng-click="showAdvanced($event)">Select the following tags below to match
+                    <span class='tag-header' >Select the following tags below to match
                         the best meaning</span>
                 </div>
                 <div class='tag-content'>
                     <a ng-repeat='t in g_tags' ng-click='selectTag($index, t)'
-                        ng-class="{tag_selected_cell: tag_selected.indexOf($index) != -1}" class='tag'>[[t]]
+                        ng-class="{tag_selected_cell: tag_selected.indexOf($index) != -1}" class='tag' style="color: #6f6f6f">[[t]]
                     </a>
                 </div>
             </div>
         </div>
-        <div id='additional-content' ng-if='translate_result.length > 0'>
+        <div id='additional-content' ng-if='translate_result.length > 0 || eng_definitions.jsondata.length > 0'>
             <div class='row'>
                 <div class='inner-content-left col-md-6'>
                     <div class="add-content-input  display-content-additional">
-                        <div ng-if='eng_definitions.length != 0' class='language-definitions'>
+                        <div ng-if='eng_definitions.jsondata.length != 0' class='language-definitions'>
                             <!-- source def pos -->
                             <div ng-if='source_notes.length != 0'>
 
@@ -145,7 +178,7 @@
                                 [[n]]
                             </div>
                         </div>
-                        <div class="r_header" ng-model='dest_r_header'><span>Translation Result for </span><span
+                        <div class="r_header" ng-model='dest_r_header'><span>Translation Results for </span><span
                                 class="r_header_word">[[dest_r_header]]</span></div>
                         <div ng-if='translate_result'>
                             <div ng-repeat='_pos in pos_types'>
@@ -154,22 +187,24 @@
                                     <div class='meaning'
                                         ng-repeat='k in translate_result | filter:{pos:_pos} track by $index'>
                                         <div class="row">
-                                            <div class="col-md-3"><span
-                                                    class='number-counts number-counts-dest'>[[$index + 1]]</span>
-                                                <span> 
+                                            <div
+                                                ng-class="{'col-md-3': _pos != 'EXPLANATION', 'col-md-12':_pos == 'EXPLANATION' }">
+                                                <span class='number-counts number-counts-dest'>[[$index + 1]]</span>
+                                                <span>
                                                     <span uib-tooltip="" tooltip-placement="top">
-                                                        <md-tooltip md-direction="top">[[k.inline_expl]]</md-tooltip>
+                                                        <md-tooltip md-direction="top" ng-if="k.inline_expl!=''">
+                                                            [[k.inline_expl]]</md-tooltip>
                                                         [[k.m]]
-                                                </span>
+                                                    </span>
                                                 </span>
                                             </div>
-                                            <div class="col-md-7">
+                                            <div class="col-md-7" ng-if="_pos != 'EXPLANATION'">
                                                 <span ng-repeat='w_s in k.n_same_m' ng-click='translate_w(w_s)'
                                                     class="n_same_m_class">
                                                     [[w_s]]
                                                 </span>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-2" ng-if="_pos != 'EXPLANATION'">
                                             </div>
 
                                         </div>
@@ -188,7 +223,7 @@
 <style>
 </style>
 <script>
-autosize(document.getElementById("main-input"));
+    autosize(document.getElementById("main-input"));
 </script>
 
 </html>

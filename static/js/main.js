@@ -2,8 +2,20 @@ var app = angular.module('stranslator', ['ui.bootstrap', 'ngMaterial', 'ngMessag
 app.config(function ($interpolateProvider) {
     $interpolateProvider.startSymbol('[[').endSymbol(']]');
 });
-app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog', function ($scope, $http, $location, $mdDialog) {
+app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog', '$window', function ($scope, $http, $location, $mdDialog, $window) {
 
+    function userLogin(newScope, ev) {
+
+        $mdDialog.show({
+            controller: DialogController,
+            templateUrl: 'login_form',
+            scope: newScope,
+            preserveScope: true,
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true
+        });
+    }
 
     function getWikiSummary(keyword, newScope, ev) {
 
@@ -49,6 +61,71 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
 
     };
 
+    $scope.showLogin = function (ev) {
+        $scope.login_action = "Login";
+        $scope.login_method = "Sign Up"
+        userLogin($scope, ev);
+    };
+
+    $scope.loginOrSignup = function () {
+        if ($scope.login_action == "Login") {
+            var req = {
+                method: 'POST',
+                url: '/login',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    'username': $scope.identity_username,
+                    'password': $scope.identity_password,
+                }
+            }
+
+            $http(req).then(function successCallback(response) {
+                if (response.data != false) {
+                    console.log(response.data);
+                    $scope.is_user_login = true;
+                    $scope.logged_username = response.data;
+                    $mdDialog.cancel();
+                }
+
+            }, function () {
+
+            });
+        } else {
+            var req = {
+                method: 'POST',
+                url: '/signup',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    'username': $scope.identity_username,
+                    'password': $scope.identity_password,
+                }
+            }
+
+            $http(req).then(function successCallback(response) {
+                $scope.is_user_login = true;
+                $scope.logged_username = response.data;
+                $mdDialog.cancel();
+            }, function () {
+
+            });
+        }
+
+    };
+
+    $scope.switchLoginMethod = function (ev) {
+        if ($scope.login_action == 'Login') {
+            $scope.login_action = "Sign Up";
+            $scope.login_method = "Login";
+        } else {
+            $scope.login_action = "Login";
+            $scope.login_method = "Sign Up";
+        }
+    }
+
     function DialogController($scope, $mdDialog) {
         $scope.hide = function () {
             $mdDialog.hide();
@@ -65,44 +142,94 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
 
 
     function getResponse(input) {
-
-        $location.url($location.path() + "?data=" + input);
-        var url = '/api/get?entry=' + input;
-        console.log(url);
         if (input == '') {
-            $scope.translate_result = false;
-            return;
+            $location.url($location.path() + "?data=" + input);
+            var url = '/api/get?entry=' + input;
+            $scope.prediction_text = '';
+            $scope.translate_result = []
+            $scope.pos_types = []
+            $scope.eng_definitions = []
+            $scope.g_tags = []
+            $scope.show_waiting_mess = false;
+            $scope.input_text = input;
+            $scope.tag_selected = [];
+            $scope.source_r_header = ''
+            $scope.dest_r_header = ''
+            $scope.dest_notes = []
+            $scope.source_notes = []
+        } else {
+            $location.url($location.path() + "?data=" + input);
+            var url = '/api/get?entry=' + input;
+            console.log(url);
+            if (input == '') {
+                $scope.translate_result = false;
+                return;
 
+            }
+            $scope.show_waiting_mess = true;
+            $http({
+                method: 'GET',
+                url: url,
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                dataType: "json"
+            }).then(function successCallback(response) {
+                console.log(response.data);
+                $scope.prediction_text = response.data.prediction;
+                if (response.data.prediction == "") {
+                    $scope.translate_result = response.data.m_vn.jsondata;
+                    $scope.pos_types = response.data.m_vn.meta.pos;
+                    $scope.eng_definitions = response.data.m_eng
+                    $scope.g_tags = response.data.m_vn.meta.global_tags;
+                    $scope.show_waiting_mess = false;
+                    $scope.input_text = input;
+                    $scope.tag_selected = [];
+                    $scope.source_r_header = response.data.m_eng.meta.r_header;
+                    $scope.dest_r_header = response.data.m_vn.meta.r_header;
+                    $scope.dest_notes = response.data.m_vn.meta.notes;
+                    $scope.source_notes = response.data.m_eng.meta.notes;
+                    $scope.translatedResult = getInitialMeaning(response.data.m_vn);
+                }
+
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+            });
         }
-        $scope.show_waiting_mess = true;
+    }
+
+    function checkLoginCredential() {
+        //TO BE UPDATE COOKIE AND SESSION
         $http({
             method: 'GET',
-            url: url,
+            url: "/session/get",
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             dataType: "json"
         }).then(function successCallback(response) {
-            console.log(response.data);
-            $scope.prediction_text = response.data.prediction;
-            if (response.data.prediction == "") {
-                $scope.translate_result = response.data.m_vn.jsondata;
-                $scope.pos_types = response.data.m_vn.meta.pos;
-                $scope.eng_definitions = response.data.m_eng
-                $scope.g_tags = response.data.m_vn.meta.global_tags;
-                $scope.show_waiting_mess = false;
-                $scope.input_text = input;
-                $scope.tag_selected = [];
-                $scope.source_r_header = response.data.m_eng.meta.r_header;
-                $scope.dest_r_header = response.data.m_vn.meta.r_header;
-                $scope.dest_notes = response.data.m_vn.meta.notes;
-                $scope.source_notes = response.data.m_eng.meta.notes;
-                $scope.translatedResult = getInitialMeaning(response.data.m_vn);
-            }
 
-        }, function errorCallback(response) {
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
+            if (response.data != 'false') {
+                $scope.is_user_login = true;
+                $scope.logged_username = response.data;
+            } else {
+                $scope.is_user_login = false;
+            }
+        });
+
+    }
+
+    $scope.user_logout = function () {
+        $http({
+            method: 'GET',
+            url: "/logout",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            dataType: "json"
+        }).then(function successCallback(response) {
+            $window.location.reload();
         });
     }
 
@@ -122,7 +249,10 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
 
     $scope.init = function () {
 
-        getResponse($location.search().data);
+        checkLoginCredential();
+
+        if ($location.search().data != undefined)
+            getResponse($location.search().data);
 
     }
     $scope.inputChange = function (input) {
@@ -156,21 +286,9 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
         $location.url($location.path() + "?data=" + input);
         getResponse(input);
     };
-
-//     $scope.autoExpand = function(e) {
-//         var element = typeof e === 'object' ? e.target : document.getElementById(e);
-//             var scrollHeight = element.scrollHeight;
-//         element.style.height =  scrollHeight + "px";    
-        
-//     };
-  
-//   function expand() {
-//     $scope.autoExpand('main_input');
-//   }
 }]);
-app.run(['$rootScope', '$window', function ($rootScope, $window) {
+app.run(['$rootScope', '$window', '$location', function ($rootScope, $window, $location) {
     $rootScope.$on('$locationChangeStart', function () {
-        // $window.location.reload();
+        $rootScope.input_text = $location.search().data;
     });
 }]);
-

@@ -1,6 +1,5 @@
-
 html, body{
-    height: 100vmax;
+    height: 100% !important;
 }
 
 .login {
@@ -12,7 +11,12 @@ html, body{
     text-align: center;
 }
 
+.profile{
+    text-align: right;
+}
+
 .profile_button {
+    cursor: pointer;
     border: 1px solid transparent;
     border-radius: 4px;
     box-sizing: border-box;
@@ -28,8 +32,9 @@ html, body{
 }
 
 #login_icon {
-    background-color: rgba(12, 98, 35, 0.8);
+    background-color: rgba(72,72,72,1.7);
     color: #fff;
+    margin-right: 10px;
 }
 
 #register_icon {
@@ -129,8 +134,9 @@ html, body{
 
 .tag {
     background: #ddd;
+    font-family: 'Baloo 2', cursive;
     /* border: 2px solid #6f6f6f; */
-    color: #6f6f6f;
+    color: #6f6f6f ;
     font-weight: bold;
     padding: 5px 15px 5px 15px;
     border-radius: 10px;
@@ -187,10 +193,14 @@ html, body{
 
 .context-buttons {
     height: 30px;
-    position: absolute;
+    
     bottom: 0;
     margin-top: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+}
+.source-audio-icons
+{
+    padding-left: 0px !important;
 }
 
 .pos-header {
@@ -223,7 +233,21 @@ html, body{
 }
 .text-prediction{
     font-size: 15px;
-    margin-bottom: 25px;
+    margin-bottom: -15px;
+}
+.text-length
+{
+    text-align: right;
+    vertical-align: middle;
+    padding-right: 0px !important;
+    font-size: 20px;
+}
+.source-button{
+    margin-right: 15px;
+    cursor: pointer;
+}
+.dest-icon{
+    position: absolute;
 }
 
 [contenteditable]:focus {
@@ -298,7 +322,16 @@ md-toolbar.md-default-theme:not(.md-menu-toolbar), md-toolbar:not(.md-menu-toolb
     background-color: rgba(0, 0, 0, 0);
 }
 
-.md-dialog{
-    max-width: 100% !important;
-    width: 800px !important;
+md-dialog{
+    max-width: 70% !important;
+    max-height: 95% !important;
+    
 }
+
+@media only screen and (max-width: 700px) {
+    .page-content {
+        margin-top: 10px !important;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+  }
