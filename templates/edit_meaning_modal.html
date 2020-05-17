@@ -1,0 +1,65 @@
+<md-dialog ng-model='dialog_header' aria-label="dialog_header">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>Edit: [[meaning_row_edit.new_m_meaning]] - [[meaning_row_edit.node_id]]</h2>
+        <span flex></span>
+        <md-button aria-label="closeicon" class="md-icon-button" ng-click="cancel()">
+          <a style="font-family: fontawesome !important;" class="far fa-times-circle"></a>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <style>
+        .content_f{
+          padding: 30px;
+        }
+      </style>
+      <div class="content_f">
+          <label>Part of Speech</label>
+          <select class="form-control" id="pos_selection" ng-model="meaning_row_edit.new_m_pos" ng-selected="meaning_row_edit.new_m_pos">
+            <option value="VERB" >VERB</option>
+            <option value="NOUN" >NOUN</option>
+            <option value="ADJECTIVE">ADJECTIVE</option>
+            <option value="EXPLANATION">EXPLANATION</option>
+            <option value="ADVERB">ADVERB</option>
+            <option value="PREPOSITION">PREPOSITION</option>
+            <option value="Phrasal_Verb">Phrasal_Verb</option>
+            <option value="ABBREVIATION">ABBREVIATION</option>
+            <option value="PHRASAL">PHRASAL</option>
+            <option value="CONJUNCTION">CONJUNCTION</option>
+            <option value="PRONOUN">PRONOUN</option>
+            <option value="NOT_KNOW_POS">NOT_KNOW_POS</option>
+          </select>
+          <br>
+     
+        <!-- meaning of the word -->
+        <label>Meaning</label>
+          <textarea class="form-control" type="text" placeholder="Meaning of the word"
+            ng-model="meaning_row_edit.new_m_meaning">[[meaning_row_edit.new_m_meaning]]</textarea>
+       <br>
+        <!-- tags of the word -->
+        <label>Tags</label>
+          <textarea class="form-control" id="m_tags" type="text" placeholder="Tags of the word"
+            ng-model="meaning_row_edit.new_m_tags">[[meaning_row_edit.new_m_tags]]</textarea>
+      <br>
+        <!-- inline explaination of the word -->
+        <label>Inline</label>
+          <textarea class="form-control"
+            ng-model="meaning_row_edit.new_m_inline_explaination">[[meaning_row_edit.new_m_inline_explaination]]</textarea>
+        
+      </div>
+
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button target="_blank" md-autofocus ng-click="save_edit_form_changes()">
+        Save
+      </md-button>
+      <md-button target="_blank" md-autofocus ng-click="cancel_edit_form()">
+        Cancel
+      </md-button>
+      <span flex></span>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

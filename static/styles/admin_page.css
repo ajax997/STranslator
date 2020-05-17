@@ -1,0 +1,102 @@
+md-pagination-wrapper {
+  background: black;
+}
+.no-padding-right{
+  padding-right: 0px !important;
+  margin-right: 0px !important;
+}
+md-dialog{
+  width: 40% !important;
+  height: 85% !important;
+}
+.md-toolbar-tools{
+  background-color: brown;
+}
+md-tab-item {
+  color: #ffffffa8 !important;
+  font-weight: bold !important;
+  font-family: "Baloo 2", cursive !important;
+}
+.text-area-content{
+  height: 40px !important;
+  resize: none;
+  background-color: #cacaca !important;
+}
+
+
+.meaning_node{
+  padding: 10px 10px 10px 10px;
+}
+.editor_form{
+  height: 700px;
+}
+.results{
+  padding-left: 10px;
+}
+md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
+  min-height: 700px !important;
+}
+
+md-sidenav {
+  position: fixed !important;
+}
+
+.wrapper {
+  height: 100%;
+}
+
+.wrapper .content {
+  background-color: #C5CAE9;
+}
+
+.wrapper .content .tab>img {
+  width: 100%;
+  padding-left: 72px;
+}
+
+.wrapper .content .tick {
+  position: absolute;
+  left: -82.8px;
+  top: 0;
+  width: 72px;
+  height: 72px;
+  background-color: #1A237E;
+  transform: rotate(45deg);
+}
+
+.wrapper .content .tab:nth-child(2)>.tick {
+  top: 72px;
+}
+
+.wrapper .content .tab:nth-child(3)>.tick {
+  top: 144px;
+}
+
+.wrapper .content .tab:nth-child(4)>.tick {
+  top: 216px;
+}
+
+.wrapper .sidebar {
+  width: 72px;
+  background-color: rgb(6, 10, 36);
+}
+
+.wrapper .sidebar .label {
+  height: 72px;
+  color: white;
+  cursor: pointer;
+  outline: none;
+}
+
+.wrapper .sidebar .label .md-icon-button {
+  height: 72px;
+  width: 72px;
+}
+
+.wrapper .sidebar .label .md-icon-button .fa {
+  font-size: 18px;
+}
+
+.wrapper .sidebar .active {
+  background-color: #1A237E;
+}

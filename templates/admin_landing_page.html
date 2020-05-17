@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
+    <script src="https://kit.fontawesome.com/fc25e07172.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main_login.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/util.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin_page.css') }}">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"
+        integrity="sha256-tyfWW2LtJQNI+l3F0h6xDV/ij6Mfn8lwSKHWOsmEgXM=" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Titan+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+2&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.js"></script>
+    <link rel="stylesheet"
+        href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-sanitize.js"></script>
+    <script src="{{ url_for('static', filename='js/admin_page.js') }} "></script>
+    <title>STranslator - Admin Page</title>
+</head>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Translate Admin Page</title>
+</head>
+
+<body ng-app="admin_page" ng-controller="adminPageControllerEditor" ng-init="init()">
+    <div id='header'></div>
+    <div ng-cloak>
+        <md-content>
+            <md-tabs class="md-primary" md-center-tabs>
+                <md-tab label="Translation Editor">
+                    <md-content class="md-padding">
+                        <div style="height: 30px;"></div>
+                        <div class="row editor_form">
+                            <div class='col-md-2'>
+                                <div>
+                                    <input class='form-control' ng-change="searchChanged($event)" id="word_search"
+                                        type="text" ng-model-options='{ debounce: 1000 }' ng-model="search_keyword"
+                                        placeholder="Search Keyword">
+                                    <div class="row" style="padding-top: 10px;">
+                                        <div class="col-md-8 no-padding-right"><input class="form-control" placeholder="New Entity">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <i class="fas fa-plus-square fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="results" ng-repeat="r in search_results">
+                                    <span>
+                                        <a style="cursor: pointer;" ng-click="searchSelect($index)">[[r.keyword]]</a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-10" style="background-color: rgb(255, 255, 255);">
+                                <div ng-if="selected_Keyword.length != 0">
+                                    IDN: [[selected_Keyword]] - [[selected_node]]
+                                </div>
+
+                                <div>
+                                </div>
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+
+                                            <th scope="col">POS</th>
+                                            <th scope="col">Meaning</th>
+                                            <th scope="col">Tags</th>
+                                            <th scope="col">Inline</th>
+                                            <th scope="col">Save</th>
+                                            <th scope="col">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="node in translate_result" id="row.[[node.node_id]]">
+                                            <!-- part of speech -->
+                                            <td>
+                                                <textarea ng-modal="row_wrapper.[[node.node_id]].pos"
+                                                    class="form-control text-area-content">[[node.pos]]</textarea>
+                                            </td>
+                                            <!-- meaning of the word -->
+                                            <td>
+                                                <textarea class="form-control text-area-content">[[node.m]]</textarea>
+                                            </td>
+                                            <!-- tags of the word -->
+                                            <td>
+                                                <textarea class="form-control text-area-content"
+                                                    id="m_tags">[[node.tags]]</textarea>
+                                            </td>
+                                            <!-- inline exp -->
+                                            <td>
+                                                <textarea
+                                                    class="form-control text-area-content">[[node.inline_expl]]</textarea>
+                                            </td>
+                                            <!-- save changes button -->
+                                            <td>
+                                                <i class="fas fa-edit fa-2x"
+                                                    ng-click="save_m_changes($event, $index)"></i>
+                                            </td>
+
+                                            <!-- delete meaning -->
+                                            <td>
+                                                <i class="fa fa-trash fa-2x" ng-click="delete_meaning($index)"></i>
+                                            </td>
+                                        </tr>
+
+                                        <tr ng-if="selected_Keyword.length != 0">
+                                            <!-- part of speech -->
+                                            <td>
+                                                <select class="form-control" id="pos_selection"
+                                                    ng-model="meaning_row.new_m_pos">
+                                                    <option value="VERB">VERB</option>
+                                                    <option value="NOUN">NOUN</option>
+                                                    <option value="ADJECTIVE">ADJECTIVE</option>
+                                                    <option value="EXPLANATION">EXPLANATION</option>
+                                                    <option value="ADVERB">ADVERB</option>
+                                                    <option value="PREPOSITION">PREPOSITION</option>
+                                                    <option value="Phrasal_Verb">Phrasal_Verb</option>
+                                                    <option value="ABBREVIATION">ABBREVIATION</option>
+                                                    <option value="PHRASAL">PHRASAL</option>
+                                                    <option value="CONJUNCTION">CONJUNCTION</option>
+                                                    <option value="PRONOUN">PRONOUN</option>
+                                                    <option value="NOT_KNOW_POS">NOT_KNOW_POS</option>
+                                                </select>
+                                            </td>
+                                            <!-- meaning of the word -->
+                                            <td>
+                                                <textarea style="height: 40px;" class="form-control" type="text"
+                                                    placeholder="Meaning of the word"
+                                                    ng-model="meaning_row.new_m_meaning">[[meaning_row.new_m_meaning]]</textarea>
+                                            </td>
+                                            <!-- tags of the word -->
+                                            <td>
+                                                <textarea style="height: 40px;" class="form-control" id="m_tags"
+                                                    type="text" placeholder="Tags of the word"
+                                                    ng-model="meaning_row.new_m_tags">[[meaning_row.new_m_tags]]</textarea>
+                                            </td>
+                                            <!-- inline explaination of the word -->
+                                            <td>
+                                                <textarea style="height: 40px;" class="form-control"
+                                                    ng-model="meaning_row.new_m_inline_explaination">[[meaning_row.new_m_inline_explaination]]</textarea>
+                                            </td>
+                                            <!-- save changes button -->
+                                            <td>
+                                                <i class="fa fa-save fa-2x" ng-click="add_new_meaning()"></i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                            </div>
+                        </div>
+
+                    </md-content>
+                </md-tab>
+                <md-tab label="Report Issues">
+                    <md-content class="md-padding">
+                        <h2 class="md-display-1">Report Issues</h2>
+                        <p class="md-body-1">
+                            Morbi viverra, ante vel aliquet tincidunt, leo dolor pharetra quam, at semper massa
+                            orci nec magna. Donec posuere nec sapien sed laoreet. Etiam cursus nunc in
+                            condimentum facilisis. Etiam in tempor tortor. Vivamus faucibus egestas enim,
+                            at convallis diam pulvinar vel. Cras ac orci eget nisi maximus cursus.
+                        </p>
+                    </md-content>
+                </md-tab>
+                <md-tab label="Users Management">
+                    <md-content class="md-padding">
+                        <h2 class="md-display-1">Users Management</h2>
+                        <p class="md-body-1">
+                            Integer turpis erat, porttitor vitae mi faucibus, laoreet interdum tellus. Curabitur
+                            posuere molestie dictum. Morbi eget congue risus, quis rhoncus quam. Suspendisse
+                            vitae hendrerit erat, at posuere mi. Cras eu fermentum nunc. Sed id ante eu orci
+                            commodo volutpat non ac est.
+                        </p>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-content>
+    </div>
+
+</body>
+
+</html>
