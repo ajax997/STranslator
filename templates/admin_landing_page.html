@@ -46,7 +46,7 @@
     <div ng-cloak>
         <md-content>
             <md-tabs class="md-primary" md-center-tabs>
-                <md-tab label="Translation Editor">
+                <md-tab label="Translation Editor VI">
                     <md-content class="md-padding">
                         <div style="height: 30px;"></div>
                         <div class="row editor_form">
@@ -55,13 +55,7 @@
                                     <input class='form-control' ng-change="searchChanged($event)" id="word_search"
                                         type="text" ng-model-options='{ debounce: 1000 }' ng-model="search_keyword"
                                         placeholder="Search Keyword">
-                                    <div class="row" style="padding-top: 10px;">
-                                        <div class="col-md-8 no-padding-right"><input class="form-control" placeholder="New Entity">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <i class="fas fa-plus-square fa-2x"></i>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                                 <div class="results" ng-repeat="r in search_results">
                                     <span>
@@ -163,20 +157,115 @@
                                             </td>
                                         </tr>
                                     </tbody>
+                                </table>
                             </div>
                         </div>
 
                     </md-content>
                 </md-tab>
-                <md-tab label="Report Issues">
+                <md-tab label="Translation Editor EN">
                     <md-content class="md-padding">
-                        <h2 class="md-display-1">Report Issues</h2>
-                        <p class="md-body-1">
-                            Morbi viverra, ante vel aliquet tincidunt, leo dolor pharetra quam, at semper massa
-                            orci nec magna. Donec posuere nec sapien sed laoreet. Etiam cursus nunc in
-                            condimentum facilisis. Etiam in tempor tortor. Vivamus faucibus egestas enim,
-                            at convallis diam pulvinar vel. Cras ac orci eget nisi maximus cursus.
-                        </p>
+                        <div style="height: 30px;"></div>
+                        <div class="row editor_form">
+                            <div class='col-md-2'>
+                                <div>
+                                    <input class='form-control' ng-change="searchChangedEN($event)" id="word_search_en"
+                                        type="text" ng-model-options='{ debounce: 1000 }' ng-model="search_keywordEN"
+                                        placeholder="Search Keyword">
+                                        <div class="row" style="padding-top: 10px;">
+                                            <div class="col-md-8 no-padding-right">
+                                                <input class="form-control" ng-model = "new_english_root_node"
+                                                    placeholder="New Entity">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <i class="fas fa-plus-square fa-2x" ng-click="addEnglishRootEntity($event)"></i>
+                                            </div>
+                                        </div>
+                                    
+                                </div>
+                                <div class="results" ng-repeat="r in search_resultsEN">
+                                    <span>
+                                        <a style="cursor: pointer;" ng-click="searchSelectEN($index)">[[r.keyword]]</a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-10" style="background-color: rgb(255, 255, 255);">
+                                <div ng-if="selected_Keyword.length != 0">
+                                    IDN: [[selected_KeywordEN]] - [[selected_nodeEN]]
+                                </div>
+
+                                <div>
+                                </div>
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+
+                                            <th scope="col">POS</th>
+                                            <th scope="col">Definition</th>
+                                            <th scope="col">Save</th>
+                                            <th scope="col">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="node in translate_resultEN">
+                                            <!-- part of speech -->
+                                            <td>
+                                                <textarea
+                                                    class="form-control text-area-content">[[node.pos]]</textarea>
+                                            </td>
+                                            <!-- meaning of the word -->
+                                            <td>
+                                                <textarea class="form-control text-area-content">[[node.definition]]</textarea>
+                                            </td>
+                                            <!-- tags of the word -->
+                                            
+                                            <td>
+                                                <i class="fas fa-edit fa-2x"
+                                                    ng-click="save_m_changesEN($event, $index)"></i>
+                                            </td>
+
+                                            <!-- delete meaning -->
+                                            <td>
+                                                <i class="fa fa-trash fa-2x" ng-click="delete_meaningEN($index)"></i>
+                                            </td>
+                                        </tr>
+
+                                        <tr ng-if="selected_KeywordEN.length != 0">
+                                            <!-- part of speech -->
+                                            <td>
+                                                <select class="form-control" id="pos_selection"
+                                                    ng-model="meaning_rowEN.new_m_pos">
+                                                    <option value="VERB">VERB</option>
+                                                    <option value="NOUN">NOUN</option>
+                                                    <option value="ADJECTIVE">ADJECTIVE</option>
+                                                    <option value="EXPLANATION">EXPLANATION</option>
+                                                    <option value="ADVERB">ADVERB</option>
+                                                    <option value="PREPOSITION">PREPOSITION</option>
+                                                    <option value="Phrasal_Verb">Phrasal_Verb</option>
+                                                    <option value="ABBREVIATION">ABBREVIATION</option>
+                                                    <option value="PHRASAL">PHRASAL</option>
+                                                    <option value="CONJUNCTION">CONJUNCTION</option>
+                                                    <option value="PRONOUN">PRONOUN</option>
+                                                    <option value="NOT_KNOW_POS">NOT_KNOW_POS</option>
+                                                </select>
+                                            </td>
+                                            <!-- definition of the word -->
+                                            <td>
+                                                <textarea style="height: 40px;" class="form-control" type="text"
+                                                    placeholder="Definition of the word"
+                                                    ng-model="meaning_rowEN.definition">[[meaning_rowEN.definition]]</textarea>
+                                            </td>
+                                            
+                                            <!-- save changes button -->
+                                            <td>
+                                                <i class="fa fa-save fa-2x" ng-click="add_new_meaningEN()"></i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                     </md-content>
                 </md-tab>
                 <md-tab label="Users Management">

@@ -149,6 +149,14 @@ def add_en_vn_meaning_for_word():
     g.insert_en_vn_meaning(root_node, new_m_details)
     return "ok"
 
+@app.route("/manage/add_english_rootnode", methods = ["POST"])
+def add_english_rootnode():
+    data = request.get_json()
+    root_node = data['rootnode']
+    g.create_english_root_node(root_node)
+    return "ok"
+
+
 ######################### Application Configuration ##########################
 
 

@@ -52,6 +52,10 @@ class nGraph():
         for n in r:
             results.append({'keyword': n['res']['objectEntity'], "node_id": n['res'].id})
         return results
+    
+    def create_english_root_node(self, entity):
+        query = "create (n:ROOTNODE:ObjectEntity{{ objectEntity:\"{}\", length: {}, language: \"english\", word : {}  }})".format(entity, len(entity), "false" if " " in entity else "true")
+        self.__run_statement(query)
 
     def check_no_direct_vn_meaning(self, node_entity):
         cypher_s = "match(n:ObjectEntity{objectEntity:\""+node_entity+"\"})-[r:TRANS_EN_VI]-() return count(r) = 0 as res"
@@ -71,6 +75,10 @@ class nGraph():
             .format(edited_node_id, lable_list ,edited_m, str(edited_tags), edited_inline, ":".
             join(x for x in edited_pos)).replace("[\"\"]", "[]").replace("['']", "[]")
         print("EDIT QUERY: ", query)
+        return self.__run_statement(query)
+    
+    def update_relationship_freq(self, from_node, to_node_id, freq):
+        query = "match (n:ROOTNODE:ObjectEntity{{ objectEntity: \"{}\" }})-[r:TRANS_EN_VI]-(v) where id(v) = {} set r.freq = {}".format(from_node, to_node_id, freq)
         return self.__run_statement(query)
 
     def get_meaning_of_word(self, w, pos):

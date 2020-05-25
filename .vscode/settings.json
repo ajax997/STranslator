@@ -1,5 +1,5 @@
 {
-    "python.dataScience.jupyterServerURI": "http://localhost:8888/?token=5cba33f0af1d7f1d2a74c8fb1ed7768093ab9ed2cf5dcc8e",
+    "python.dataScience.jupyterServerURI": "http://127.0.0.1:8888/?token=ea8f62111921ac1c7f728bb76f27794254bd421ec8d124df",
     "python.pythonPath": "/Library/Frameworks/Python.framework/Versions/3.6/bin/python3",
     "python.linting.enabled": false
 }

@@ -33,6 +33,21 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
         });
     }
 
+    function load_meaning_of_wordEN(word) {
+        var req = {
+            method: 'get',
+            url: '/api/get?entry=' + word,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {}
+        }
+        $http(req).then(function successCallback(response) {
+            console.log(response);
+            $scope.translate_resultEN = response.data.m_eng.jsondata;
+        });
+    }
+
 
     $scope.searchChanged = function (event) {
         var req = {
@@ -48,6 +63,40 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
         });
     }
 
+
+    $scope.searchChangedEN = function (event) {
+        var req = {
+            method: 'get',
+            url: '/api/search?entry=' + $scope.search_keywordEN,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {}
+        }
+        $http(req).then(function successCallback(response) {
+            $scope.search_resultsEN = response.data;
+        });
+    }
+
+    $scope.addEnglishRootEntity = function(event)
+    {
+        var req = {
+            method: 'POST',
+            url: '/manage/add_english_rootnode',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: {
+                
+                rootnode: $scope.new_english_root_node
+            }
+        }
+        console.log($scope.new_english_root_node);
+
+        $http(req).then(function successCallback(response) {
+            $scope.searchChangedEN(null);
+        });
+    }
     //////// Search Seletion /////////
 
     $scope.searchSelect = function (index) {
@@ -59,6 +108,14 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
         $scope.selected_Keyword = $scope.search_results[index].keyword;
         $scope.selected_node = $scope.search_results[index].node_id;
         load_meaning_of_word($scope.selected_Keyword);
+    };
+
+    $scope.searchSelectEN = function (index) {
+
+
+        $scope.selected_KeywordEN = $scope.search_resultsEN[index].keyword;
+        $scope.selected_nodeEN = $scope.search_resultsEN[index].node_id;
+        load_meaning_of_wordEN($scope.selected_KeywordEN);
     };
 
     function checkLoginCredential() {

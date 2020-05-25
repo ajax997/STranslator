@@ -1,5 +1,5 @@
 html, body{
-    height: 100% !important;
+    height: auto !important;
 }
 
 .login {
@@ -286,7 +286,7 @@ html, body{
 .output-operators {
     /* height: 100% !important; */
     background-color: rgb(242, 242, 242);
-    border-left: 3px solid #6f6f6f;
+   
 }
 
 .row {
@@ -333,5 +333,17 @@ md-dialog{
         margin-top: 10px !important;
         margin-left: 0px !important;
         margin-right: 0px !important;
+    }
+  }
+
+  @media only screen and (max-width: 700px) {
+    .site-header {
+        padding-left: 0px !important;
+    }
+  }
+
+  @media (min-width: 768px){
+    .output-operators {
+        border-left: 3px solid #6f6f6f;
     }
   }

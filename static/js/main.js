@@ -55,6 +55,11 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
     function getInitialMeaning(input) {
         return ""
     }
+
+    /*
+    show wikipedia information about the search term
+    */
+
     $scope.showAdvanced = function (ev) {
         var newScope = $scope.$new();
         getWikiSummary($scope.input_text, newScope, ev);
@@ -143,7 +148,7 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
 
     function getResponse(input) {
         if (input == '') {
-            $location.url($location.path() + "?data=" + input);
+
             var url = '/api/get?entry=' + input;
             $scope.prediction_text = '';
             $scope.translate_result = []
@@ -158,7 +163,7 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
             $scope.dest_notes = []
             $scope.source_notes = []
         } else {
-            $location.url($location.path() + "?data=" + input);
+
             var url = '/api/get?entry=' + input;
             console.log(url);
             if (input == '') {
@@ -252,11 +257,26 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
         checkLoginCredential();
 
         if ($location.search().data != undefined)
-            getResponse($location.search().data);
+            $location.url($location.path() + "?data=" + $location.search().data);
+        else {
+            $scope.prediction_text = '';
+            $scope.translate_result = []
+            $scope.pos_types = []
+            $scope.eng_definitions = []
+            $scope.g_tags = []
+            $scope.show_waiting_mess = false;
+            $scope.input_text = "";
+            $scope.tag_selected = [];
+            $scope.source_r_header = ''
+            $scope.dest_r_header = ''
+            $scope.dest_notes = []
+            $scope.source_notes = []
+        }
 
     }
     $scope.inputChange = function (input) {
-        getResponse(input);
+        $location.url($location.path() + "?data=" + input);
+
 
     };
 
@@ -279,16 +299,18 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
         }
         console.log($scope.listSlelectedTag)
         $scope.determine_best_match(value);
-        console.log("call function");
     }
 
     $scope.translate_w = function (input) {
         $location.url($location.path() + "?data=" + input);
-        getResponse(input);
+        //getResponse(input);
     };
-}]);
-app.run(['$rootScope', '$window', '$location', function ($rootScope, $window, $location) {
-    $rootScope.$on('$locationChangeStart', function () {
-        $rootScope.input_text = $location.search().data;
+
+    $scope.$on('$locationChangeStart', function () {
+        if ($location.search().data != undefined) {
+            $scope.input_text = $location.search().data;
+            getResponse($location.search().data);
+        }
     });
+
 }]);

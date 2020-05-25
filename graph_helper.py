@@ -45,12 +45,12 @@ class GraphHelper():
         except:
             pass
         direct_node = self.g.get_direct_meaning_node(w, "LANG_POS_MEANING")
-        print(direct_node)
         local_m = self.get_vn_meaning(w)
         eng_m = self.get_eng_meaning(direct_node)
         derivetive_m = self.get_vn_meaning(direct_node)
         return {'prediction': "", 'm_eng': eng_m, 'm_vn': self.__add_note(self.__merge(local_m, derivetive_m), labels)}
-        
+
+     
         
     def process_not_found_node(self, w):
         w = self.no_accent_vietnamese(w)

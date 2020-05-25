@@ -43,11 +43,11 @@
 
     <div class="site-header">
         <div class='row'>
-            <div class="col-1">
+            <div class="col-1 col-xs-6">
                 <img id='logo-img' src="{{ url_for ('static', filename='images/logo.png') }}" />
             </div>
-            <div class="col-6"><span id="site-title">Smart Translator</span></div>
-            <div class='col-5'>
+            <div class="col-6 d-sm-block d-none d-sm-none d-md-block"><span id="site-title">Smart Translator</span></div>
+            <div class='col-5 col-xs-6'>
                 <div class='profile' ng-if='is_user_login'>
                     <span>[[logged_username]]</span>
                     <span><i class="fa fa-sign-out" aria-hidden="true" ng-click="user_logout()"></i><md-tooltip md-direction="bottom">Logout</md-tooltip></span>
@@ -75,7 +75,7 @@
                             ng-model-options='{ debounce: 1000 }'>
                         [[input_text]]
                         </textarea>
-                        <div class='text-prediction' ng-if='prediction_text != ""'>
+                        <div class='text-prediction' ng-if='prediction_text.length != 0'>
                             <span>Is this what you mean: <a
                                     ng-click="translate_w(prediction_text)">[[prediction_text]]</a></span>
                         </div>
