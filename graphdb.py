@@ -77,8 +77,9 @@ class nGraph():
         print("EDIT QUERY: ", query)
         return self.__run_statement(query)
     
-    def update_relationship_freq(self, from_node, to_node_id, freq):
-        query = "match (n:ROOTNODE:ObjectEntity{{ objectEntity: \"{}\" }})-[r:TRANS_EN_VI]-(v) where id(v) = {} set r.freq = {}".format(from_node, to_node_id, freq)
+    def update_relationship_freq(self, from_node, to_node_id, freq, examples):
+        query = "match (n:ROOTNODE:ObjectEntity{{ objectEntity: \"{}\" }})-[r:TRANS_EN_VI]-(v) where id(v) = {} set r.freq = {} , r.translation_examples = {}".format(from_node, to_node_id, freq, examples)
+        #print(query)
         return self.__run_statement(query)
 
     def get_meaning_of_word(self, w, pos):
