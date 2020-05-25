@@ -46,6 +46,11 @@ def render_modal():
 def render_modal_login():
     return render_template("user_login_form.html")
 
+@app.route("/example_sentences")
+def load_example_sentences():
+    return render_template("example_sentences.html")
+
+
 @app.route("/edit_meaning")
 def render_edit_meaning_form():
     return render_template("edit_meaning_modal.html")
@@ -55,6 +60,8 @@ def update_meaning():
     data = request.get_json()['tobe_sent_data']
     g.update_meaning(data)
     return "ok"
+
+
 
 @app.route("/login", methods=['POST'])
 def user_login():
@@ -85,6 +92,11 @@ def meaning():
     entry = request.args.get('entry').strip().lower()
     # return json.dumps(get_meaning_json(entry))
     return json.dumps(get_meaning_json(entry))
+
+@app.route("/api/get_example", methods=["POST"])
+def get_example_sentences():
+    data = request.get_json()
+    return json.dumps(ghelper.get_en_vi_example_sentences(data['from_node'], data["to_node_id"]))
 
 @app.route("/api/search", methods=['get'])
 def get_list_search():

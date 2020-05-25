@@ -194,8 +194,13 @@
                                                     <span uib-tooltip="" tooltip-placement="top">
                                                         <md-tooltip md-direction="top" ng-if="k.inline_expl!=''">
                                                             [[k.inline_expl]]</md-tooltip>
-                                                        [[k.m]]
+                                                        [[k.m]] 
                                                     </span>
+                                                    <span ng-if="k.freq > 1">
+                                                        <md-tooltip md-direction="top">Show translation examples</md-tooltip>
+                                                    <i style="color: #00000082" class="fa fa-info-circle" aria-hidden="true" ng-click="show_example_sentences(k.node_id, k.m)"></i>
+                                                    </span>
+                                                    
                                                 </span>
                                             </div>
                                             <div class="col-md-7" ng-if="_pos != 'EXPLANATION'">
@@ -205,6 +210,8 @@
                                                 </span>
                                             </div>
                                             <div class="col-md-2" ng-if="_pos != 'EXPLANATION'">
+                                                
+                                                [[k.freq]]
                                             </div>
 
                                         </div>

@@ -46,7 +46,7 @@ class nGraph():
         self.__run_statement(query)
 
     def search_english_node(self, entity):
-        query = "match (n:ObjectEntity:ROOTNODE) where n.objectEntity starts with '{}' return distinct n as res limit 30 ".format(entity)
+        query = "match (n:ObjectEntity:ROOTNODE) where n.objectEntity starts with '{}' return distinct n as res order by length(n.objectEntity) limit 30 ".format(entity)
         r = self.__run_statement(query)[1].records()
         results = []
         for n in r:
@@ -83,7 +83,7 @@ class nGraph():
         return self.__run_statement(query)
 
     def get_meaning_of_word(self, w, pos):
-        query = "match (n:ObjectEntity{objectEntity:\""+w+"\"})-[r:TRANS_EN_VI|:EXPLAINAION_VI_VI]->(v"+pos+")  return n,r,v"
+        query = "match (n:ObjectEntity{objectEntity:\""+w+"\"})-[r:TRANS_EN_VI|:EXPLAINAION_VI_VI]->(v"+pos+")  return n,r,v order by r.freq desc"
         return self.__run_statement(query)
     def get_meaning_itself(self, w):
         query = "match (n:ObjectEntity{objectEntity:\""+w+"\"})-[:LANG_POLY_MEANING]->(v) where exists(v.definition)  return labels(v) as lbs, v.definition as def ,ID(v) as id"
@@ -108,11 +108,11 @@ class nGraph():
         print(check_result)
         print(new_tags, new_inline.strip() == "")
         if (check_result != False and new_tags[0] == "" and new_inline == ""):
-            query = "match(n) match(v) where id(n) = {} and id(v) = {} create(n)-[:TRANS_EN_VI]->(v)".format(from_id, check_result)
+            query = "match(n) match(v) where id(n) = {} and id(v) = {} create(n)-[:TRANS_EN_VI{{freq: 1}}]->(v)".format(from_id, check_result)
             print(query)
             return self.__run_statement(query)
         else:
-            query = "match (n) where id(n) = {} merge(v:ObjectEntity:{}{{ objectEntity:\"{}\", language: \"vietnamese\", tags: {}, inline_expl: [\"{}\"] }}) create(n)-[:TRANS_EN_VI]->(v)"\
+            query = "match (n) where id(n) = {} merge(v:ObjectEntity:{}{{ objectEntity:\"{}\", language: \"vietnamese\", tags: {}, inline_expl: [\"{}\"] }}) create(n)-[r:TRANS_EN_VI{{freq: 1}}]->(v)"\
                 .format(from_id, new_pos, new_m,str(new_tags), new_inline).replace("[\"\"]", "[]").replace("['']", "[]")
             print(query)
             return self.__run_statement(query)
@@ -120,7 +120,7 @@ class nGraph():
 
 
 
-    #########################USER STUFF############################
+    #########################USER STUFFS############################
 
     def check_user_name(self, username):
         cypher_s = "match(n:User{username:\""+username+"\"}) return count(n) <> 0 as res"
@@ -137,6 +137,12 @@ class nGraph():
     def check_login_credential(self, username, password, admin):
         cypher_s = "match(n:User{username:\""+username+"\", password: \""+password+"\", admin: "+str(admin)+"}) return count(n) <> 0 as res"
         r = self.__run_statement(cypher_s)[1].records()
+        for n in r:
+            return n['res']
+
+    def get_en_vi_relation_attr(self, from_node, to_node_id, attr):
+        query = "match (n:ROOTNODE:ObjectEntity{{ objectEntity: \"{}\" }})-[r:TRANS_EN_VI]->(v) where id(v) = {} return r.{} as res".format(from_node, to_node_id, attr)
+        r = self.__run_statement(query)[1].records()
         for n in r:
             return n['res']
 

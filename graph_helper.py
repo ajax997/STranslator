@@ -50,7 +50,11 @@ class GraphHelper():
         derivetive_m = self.get_vn_meaning(direct_node)
         return {'prediction': "", 'm_eng': eng_m, 'm_vn': self.__add_note(self.__merge(local_m, derivetive_m), labels)}
 
-     
+    def get_en_vi_example_sentences(self, from_node, to_node_id):
+        example_list = self.g.get_en_vi_relation_attr(from_node, to_node_id, 'translation_examples')
+        final_results = []
+        return  [pair.split(" [8119afcf12] ") for pair in example_list][:10]
+
         
     def process_not_found_node(self, w):
         w = self.no_accent_vietnamese(w)

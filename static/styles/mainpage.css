@@ -327,6 +327,11 @@ md-dialog{
     max-height: 95% !important;
     
 }
+.sentence_pair{
+    text-align: center;
+    font-family: 'Baloo 2', cursive;
+    margin: 10px 20px 10px 20px;
+}
 
 @media only screen and (max-width: 700px) {
     .page-content {

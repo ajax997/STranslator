@@ -78,8 +78,7 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
         });
     }
 
-    $scope.addEnglishRootEntity = function(event)
-    {
+    $scope.addEnglishRootEntity = function (event) {
         var req = {
             method: 'POST',
             url: '/manage/add_english_rootnode',
@@ -87,7 +86,7 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
                 'Content-Type': 'application/json'
             },
             data: {
-                
+
                 rootnode: $scope.new_english_root_node
             }
         }
@@ -193,8 +192,7 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
 
         var new_tags = [];
         var raw_tags = $scope.meaning_row.new_m_tags.split("|")
-        for (var i = 0; i< raw_tags.length; i++)
-        {
+        for (var i = 0; i < raw_tags.length; i++) {
             new_tags.push(raw_tags[i].trim());
         }
 
@@ -285,13 +283,22 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
     }
 
     $scope.init = function () {
+        //checkLoginCredential();
         $scope.meaning_row_edit = {};
         $scope.meaning_row = {};
         $scope.selected_Keyword = "";
         $scope.selected_node = "";
-        //checkLoginCredential();
+        
+
+        // if ($location.search().data != undefined) {
+        //     $scope.meaning_row.new_m_pos = "";
+        //     $scope.meaning_row.new_m_meaning = "";
+        //     $scope.meaning_row.new_m_tags = "";
+        //     $scope.meaning_row.new_m_inline_explaination = "";
+
+        //     $scope.selected_Keyword = $location.search().data
+        //     $scope.selected_node = $scope.search_results[index].node_id;
+        //     load_meaning_of_word($location.search().data);
+        // }
     }
-
-
-
 }]);

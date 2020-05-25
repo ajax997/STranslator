@@ -53,7 +53,17 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
     }
 
     function getInitialMeaning(input) {
-        return ""
+        var r_text = "";
+        var r_score = 0;
+        for (var i = 0; i< input.jsondata.length; i++)
+        {
+            if (input.jsondata[i].freq > r_score)
+            {
+                r_text = input.jsondata[i].m;
+                r_score = input.jsondata[i].freq;
+            }
+        }
+        return r_text;
     }
 
     /*
@@ -305,6 +315,34 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
         $location.url($location.path() + "?data=" + input);
         //getResponse(input);
     };
+
+    $scope.show_example_sentences = function(node_id, m){
+        $http({
+            method: 'POST',
+            url: "/api/get_example",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            dataType: "json",
+            data: {
+                from_node: $scope.dest_r_header,
+                to_node_id: node_id
+            }
+
+        }).then(function successCallback(response) {
+            $scope.example_sentences = response.data;
+            $scope.examples_header_title = m;
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: 'example_sentences',
+                scope: $scope,
+                preserveScope: true,
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
+        });
+        
+    }
 
     $scope.$on('$locationChangeStart', function () {
         if ($location.search().data != undefined) {

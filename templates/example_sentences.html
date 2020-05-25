@@ -1,0 +1,27 @@
+<md-dialog ng-model='dialog_header' aria-label="dialog_header">
+    <form ng-cloak>
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <h2>Example sentences translation for [[examples_header_title]]</h2>
+          <span flex></span>
+          <md-button class="md-icon-button" ng-click="cancel()">
+            <a style="font-family: fontawesome !important;" class="far fa-times-circle"></a>
+          </md-button>
+        </div>
+      </md-toolbar>
+  
+      <md-dialog-content>
+        <div ng-repeat="s in example_sentences" class="sentence_pair">
+            <div ng-repeat="s_s in s">
+                <div >“[[s_s]]”
+                    
+                </div>
+                
+                
+            </div>
+            <hr>
+        </div>
+      </md-dialog-content>
+     
+    </form>
+  </md-dialog>
