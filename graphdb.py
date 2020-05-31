@@ -42,7 +42,7 @@ class nGraph():
         return entity
 
     def delete_en_vi_connection(self, id_from, id_to):
-        query = "MATCH (n)-[r:TRANS_EN_VI]->(v) where id(n) = {} and id(v) = {} delete r".format(id_from, id_to)
+        query = "MATCH (n)-[r:TRANS_EN_VI]->(v) where id(n) = {} and id(v) = {} detach delete r".format(id_from, id_to)
         self.__run_statement(query)
 
     def search_english_node(self, entity):
@@ -64,16 +64,19 @@ class nGraph():
             return n['res']
 
     def update_meaning(self, data):
+        from_node_id = data['from_node_id']
         edited_node_id = data['node_id']
         edited_pos = data['edited_pos']
         edited_m = data['edited_m']
         edited_tags = data['edited_tags']
         edited_inline = data['edited_inline']
+        edited_freq = data["edited_freq"]
+
         lable_list = ":".join(x for x in self.get_label_by_id(edited_node_id))
 
-        query = "match (n) where id(n) = {} remove n:{} set n.objectEntity = \"{}\", n.tags = {}, n.inline_expl = [\"{}\"], n:{}" \
-            .format(edited_node_id, lable_list ,edited_m, str(edited_tags), edited_inline, ":".
-            join(x for x in edited_pos)).replace("[\"\"]", "[]").replace("['']", "[]")
+        query = "match (a)-[r:TRANS_EN_VI]->(n) where id(a) = {} and id(n) = {} remove n:{} set n.objectEntity = \"{}\", n.tags = {}, n.inline_expl = [\"{}\"], n:{}, r.freq ={}" \
+            .format(from_node_id, edited_node_id, lable_list ,edited_m, str(edited_tags), edited_inline, ":".
+            join(x for x in edited_pos), edited_freq).replace("[\"\"]", "[]").replace("['']", "[]")
         print("EDIT QUERY: ", query)
         return self.__run_statement(query)
     
@@ -104,16 +107,17 @@ class nGraph():
         new_m       = details['m']
         new_tags    = details['tags']
         new_inline  = details['inline']
+        new_freq    = details['freq']
         check_result = self.check_vn_meaning_exist(new_pos, new_m)
         print(check_result)
         print(new_tags, new_inline.strip() == "")
         if (check_result != False and new_tags[0] == "" and new_inline == ""):
-            query = "match(n) match(v) where id(n) = {} and id(v) = {} create(n)-[:TRANS_EN_VI{{freq: 1}}]->(v)".format(from_id, check_result)
+            query = "match(n) match(v) where id(n) = {} and id(v) = {} create(n)-[:TRANS_EN_VI{{freq: {}}}]->(v)".format(from_id, check_result, new_freq)
             print(query)
             return self.__run_statement(query)
         else:
-            query = "match (n) where id(n) = {} merge(v:ObjectEntity:{}{{ objectEntity:\"{}\", language: \"vietnamese\", tags: {}, inline_expl: [\"{}\"] }}) create(n)-[r:TRANS_EN_VI{{freq: 1}}]->(v)"\
-                .format(from_id, new_pos, new_m,str(new_tags), new_inline).replace("[\"\"]", "[]").replace("['']", "[]")
+            query = "match (n) where id(n) = {} merge(v:ObjectEntity:{}{{ objectEntity:\"{}\", language: \"vietnamese\", tags: {}, inline_expl: [\"{}\"] }}) create(n)-[r:TRANS_EN_VI{{freq: {}}}]->(v)"\
+                .format(from_id, new_pos, new_m,str(new_tags), new_inline).replace("[\"\"]", "[]").replace("['']", "[]", new_freq)
             print(query)
             return self.__run_statement(query)
 

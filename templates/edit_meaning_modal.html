@@ -12,44 +12,49 @@
 
     <md-dialog-content>
       <style>
-        .content_f{
+        .content_f {
           padding: 30px;
         }
       </style>
       <div class="content_f">
-          <label>Part of Speech</label>
-          <select class="form-control" id="pos_selection" ng-model="meaning_row_edit.new_m_pos" ng-selected="meaning_row_edit.new_m_pos">
-            <option value="VERB" >VERB</option>
-            <option value="NOUN" >NOUN</option>
-            <option value="ADJECTIVE">ADJECTIVE</option>
-            <option value="EXPLANATION">EXPLANATION</option>
-            <option value="ADVERB">ADVERB</option>
-            <option value="PREPOSITION">PREPOSITION</option>
-            <option value="Phrasal_Verb">Phrasal_Verb</option>
-            <option value="ABBREVIATION">ABBREVIATION</option>
-            <option value="PHRASAL">PHRASAL</option>
-            <option value="CONJUNCTION">CONJUNCTION</option>
-            <option value="PRONOUN">PRONOUN</option>
-            <option value="EXCLAMATION">EXCLAMATION</option>
-            <option value="NOT_KNOW_POS">NOT_KNOW_POS</option>
-          </select>
-          <br>
-     
+        <label>Part of Speech</label>
+        <select class="form-control" id="pos_selection" ng-model="meaning_row_edit.new_m_pos"
+          ng-selected="meaning_row_edit.new_m_pos">
+          <option value="VERB">VERB</option>
+          <option value="NOUN">NOUN</option>
+          <option value="ADJECTIVE">ADJECTIVE</option>
+          <option value="EXPLANATION">EXPLANATION</option>
+          <option value="ADVERB">ADVERB</option>
+          <option value="PREPOSITION">PREPOSITION</option>
+          <option value="Phrasal_Verb">Phrasal_Verb</option>
+          <option value="ABBREVIATION">ABBREVIATION</option>
+          <option value="PHRASAL">PHRASAL</option>
+          <option value="CONJUNCTION">CONJUNCTION</option>
+          <option value="PRONOUN">PRONOUN</option>
+          <option value="EXCLAMATION">EXCLAMATION</option>
+          <option value="NOT_KNOW_POS">NOT_KNOW_POS</option>
+        </select>
+        <br>
+
         <!-- meaning of the word -->
         <label>Meaning</label>
-          <textarea class="form-control" type="text" placeholder="Meaning of the word"
-            ng-model="meaning_row_edit.new_m_meaning">[[meaning_row_edit.new_m_meaning]]</textarea>
-       <br>
+        <textarea class="form-control" type="text" placeholder="Meaning of the word"
+          ng-model="meaning_row_edit.new_m_meaning">[[meaning_row_edit.new_m_meaning]]</textarea>
+        <br>
         <!-- tags of the word -->
         <label>Tags</label>
-          <textarea class="form-control" id="m_tags" type="text" placeholder="Tags of the word"
-            ng-model="meaning_row_edit.new_m_tags">[[meaning_row_edit.new_m_tags]]</textarea>
-      <br>
+        <textarea class="form-control" id="m_tags" type="text" placeholder="Tags of the word"
+          ng-model="meaning_row_edit.new_m_tags">[[meaning_row_edit.new_m_tags]]</textarea>
+        <br>
         <!-- inline explaination of the word -->
         <label>Inline</label>
-          <textarea class="form-control"
-            ng-model="meaning_row_edit.new_m_inline_explaination">[[meaning_row_edit.new_m_inline_explaination]]</textarea>
-        
+        <textarea class="form-control"
+          ng-model="meaning_row_edit.new_m_inline_explaination">[[meaning_row_edit.new_m_inline_explaination]]</textarea>
+        <br>
+        <!-- freq of the word -->
+        <label>Inline</label>
+        <textarea class="form-control"
+          ng-model="meaning_row_edit.new_m_freq">[[meaning_row_edit.new_m_freq]]</textarea>
       </div>
 
     </md-dialog-content>

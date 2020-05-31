@@ -154,7 +154,15 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
             $mdDialog.hide(answer);
         };
     }
-
+    // function sort_callback_result(arr)
+    // {
+    //     function compare(a, b){
+    //         if (a.freq > b.freq)
+    //         return 1;
+    //         return -1;
+    //     }
+    //     return arr.sort(compare);
+    // }
 
     function getResponse(input) {
         if (input == '') {

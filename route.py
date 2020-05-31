@@ -110,7 +110,8 @@ def get_meaning_json(w):
 
     if g.check_node_exist(w):
         # check if the node has no direct meaning e.g. globally (get meaning via) -> global
-        if not g.check_no_direct_vn_meaning(w) and (len(labels) == 2 or "Phrasal_Verb" in labels or "IDIOM" in labels):
+        #if not g.check_no_direct_vn_meaning(w) and (len(labels) == 2 or "Phrasal_Verb" in labels or "IDIOM" in labels):
+        if not g.check_no_direct_vn_meaning(w):
             m_eng = ghelper.get_eng_meaning(w)
             m_vn = ghelper.get_vn_meaning(w)
             return {'prediction': '', 'm_eng': m_eng, 'm_vn': m_vn}

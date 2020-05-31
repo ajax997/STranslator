@@ -65,7 +65,7 @@
                             </div>
                             <div class="col-md-10" style="background-color: rgb(255, 255, 255);">
                                 <div ng-if="selected_Keyword.length != 0">
-                                    IDN: [[selected_Keyword]] - [[selected_node]]
+                                    IDN: [[selected_Keyword]] - [[selected_node]] - [[modification_for]]
                                 </div>
 
                                 <div>
@@ -78,6 +78,7 @@
                                             <th scope="col">Meaning</th>
                                             <th scope="col">Tags</th>
                                             <th scope="col">Inline</th>
+                                            <th scope="col">Freq</th>
                                             <th scope="col">Save</th>
                                             <th scope="col">Delete</th>
                                         </tr>
@@ -102,6 +103,11 @@
                                             <td>
                                                 <textarea
                                                     class="form-control text-area-content">[[node.inline_expl]]</textarea>
+                                            </td>
+                                            <!-- freq of the translation -->
+                                            <td>
+                                                <textarea
+                                                    class="form-control text-area-content">[[node.freq]]</textarea>
                                             </td>
                                             <!-- save changes button -->
                                             <td>
@@ -151,6 +157,10 @@
                                             <td>
                                                 <textarea style="height: 40px;" class="form-control"
                                                     ng-model="meaning_row.new_m_inline_explaination">[[meaning_row.new_m_inline_explaination]]</textarea>
+                                            </td>
+                                            <td>
+                                                <textarea
+                                                    class="form-control text-area-content" ng-model="meaning_row.new_m_freq">[[meaning_row.new_m_freq]]</textarea>
                                             </td>
                                             <!-- save changes button -->
                                             <td>

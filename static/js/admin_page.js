@@ -29,6 +29,7 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
         }
         $http(req).then(function successCallback(response) {
             console.log(response);
+            $scope.modification_for = response.data.m_vn.meta.r_header;
             $scope.translate_result = response.data.m_vn.jsondata;
         });
     }
@@ -180,7 +181,7 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
     };
 
     $scope.add_new_meaning = function () {
-        if ($scope.meaning_row.new_m_meaning.trim() == "" || $scope.meaning_row.new_m_pos.trim() == "") {
+        if ($scope.meaning_row.new_m_meaning.trim() == "" || $scope.meaning_row.new_m_pos.trim() == "" || $scope.meaning_row.new_m_freq.trim() == "") {
             alert("Can't insert blank meaning or POS");
             return;
         }
@@ -208,7 +209,8 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
                     pos: $scope.meaning_row.new_m_pos,
                     m: $scope.meaning_row.new_m_meaning,
                     tags: new_tags,
-                    inline: $scope.meaning_row.new_m_inline_explaination
+                    inline: $scope.meaning_row.new_m_inline_explaination,
+                    freq: $scope.meaning_row.new_m_freq
                 }
             }
         }
@@ -223,6 +225,7 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
     }
     $scope.save_edit_form_changes = function () {
         var tobe_sent_data = {};
+        tobe_sent_data.from_node_id = $scope.selected_node;
         tobe_sent_data.edited_pos = ["ObjectEntity", $scope.meaning_row_edit.new_m_pos];
         tobe_sent_data.edited_m = $scope.meaning_row_edit.new_m_meaning.trim();
         var edited_tags_raw = $scope.meaning_row_edit.new_m_tags.split("|");
@@ -231,6 +234,8 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
             tobe_sent_data.edited_tags.push(edited_tags_raw[i].trim());
         tobe_sent_data.edited_inline = $scope.meaning_row_edit.new_m_inline_explaination;
         tobe_sent_data.node_id = $scope.meaning_row_edit.node_id;
+        tobe_sent_data.edited_freq = $scope.meaning_row_edit.new_m_freq;
+
         console.log(tobe_sent_data);
 
         var req = {
