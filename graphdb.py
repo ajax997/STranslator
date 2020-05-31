@@ -117,7 +117,7 @@ class nGraph():
             return self.__run_statement(query)
         else:
             query = "match (n) where id(n) = {} merge(v:ObjectEntity:{}{{ objectEntity:\"{}\", language: \"vietnamese\", tags: {}, inline_expl: [\"{}\"] }}) create(n)-[r:TRANS_EN_VI{{freq: {}}}]->(v)"\
-                .format(from_id, new_pos, new_m,str(new_tags), new_inline).replace("[\"\"]", "[]").replace("['']", "[]", new_freq)
+                .format(from_id, new_pos, new_m,str(new_tags), new_inline, new_freq).replace("[\"\"]", "[]").replace("['']", "[]")
             print(query)
             return self.__run_statement(query)
 
