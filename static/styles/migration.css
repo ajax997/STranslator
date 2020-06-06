@@ -1,0 +1,45 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 10px 10px 10px 10px;
+  font-family: 'Baloo 2', cursive;
+}
+.content{
+    height: 100%;
+}
+.right-top{
+    
+    height: 35%;
+    width: 100%;
+    /* background-color: darkcyan; */
+}
+.right-bottom{
+
+    height: 60%;
+    width: 100%;
+    /* background-color: chocolate; */
+
+}
+.left-panel{
+    height: 100%;
+    border-right: gray 3px solid;
+}
+.right-control
+{
+    height: 5%;
+}
+.right-panel{
+    height: 100%;
+}
+.text-title{
+    font-size: 25px;
+    color: red;
+}
+.row-highlight
+{
+    background-color: #d2d2d2;
+}
+.row-non-highlight{
+    background-color: beige;
+}

@@ -8,6 +8,11 @@ import os
 import hashlib
 from flask import Flask, session
 import configparser
+import pickle
+
+
+list_words = pickle.load(open("guessing.pkl", 'rb'))
+list_words_exp = pickle.load(open("w_no_meaning.pkl", 'rb'))
 
 app = Flask(__name__)
 
@@ -20,6 +25,7 @@ g = nGraph(config['DATABASE']['database_bolt_url'], config['DATABASE']['database
 SALT = config['DATABASE']['salt']
 
 ghelper = GraphHelper(g)
+
 
 def hash_password(password):
     return hashlib.sha224((password+SALT).encode()).hexdigest()
@@ -93,6 +99,11 @@ def meaning():
     # return json.dumps(get_meaning_json(entry))
     return json.dumps(get_meaning_json(entry))
 
+@app.route("/api/migration", methods=['get'])
+def migration_info():
+    entry = request.args.get('data').strip().lower()
+    return json.dumps([list_words_exp[entry][:20], list_words[entry]])
+
 @app.route("/api/get_example", methods=["POST"])
 def get_example_sentences():
     data = request.get_json()
@@ -128,6 +139,13 @@ def get():
     if (session.get("current_login_user")):
         return session.get('current_login_user')
     return "false"
+
+@app.route("/manage/migration")
+def migration():
+    return render_template("migration.html")
+@app.route("/migration/get-list-words")
+def get_list_word():
+    return json.dumps([x for x in list_words.keys()])
 
 @app.route("/manage/admin")
 def access_admin_page():

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular.min.js"></script>
+    <script src="https://kit.fontawesome.com/fc25e07172.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main_login.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/util.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/migration.css') }}">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"
+        integrity="sha256-tyfWW2LtJQNI+l3F0h6xDV/ij6Mfn8lwSKHWOsmEgXM=" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Titan+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+2&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.js"></script>
+    <link rel="stylesheet"
+        href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-sanitize.js"></script>
+    <script src="{{ url_for('static', filename='js/migration.js') }} "></script>
+    <title>Migration</title>
+</head>
+
+<body>
+    <div class="row content" ng-app="migration" ng-controller="migrationController" ng-init="init()">
+        <div class="col-md-4 left-panel" style="overflow: auto;">
+            <div>
+                <span>
+                    Current Word: <a class="text-title" href="https://translate.google.com/#view=home&op=translate&sl=en&tl=vi&text=[[config.selected_word]]" target="_blank">[[config.selected_word]]</a>
+                    Viewing Word: <span>[[returned_data.viewing_of]] - Node ID: <a href="/manage/admin" target="_blank">[[returned_data.viewing_of_node_id]]</a></span>
+                </span>
+            </div>
+            <div class="row" ng-repeat="m in returned_data.vn_meanings">
+                <div class="col-md=5">
+                    <input class="form-control" value="[[m.pos]]">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" value="[[m.m]]">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" value="[[m.freq]]">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 right-panel">
+            <div class="row right-control">
+                <div class="col-md-3">
+                    <input class="form-control" placeholder="Search">
+                </div>
+                <div class="col-md-3">
+                    <button class="form-control btn btn-outline-secondary">Search</button>
+                </div>
+                <div class="col-md-3">
+                    <button class="form-control btn btn-outline-secondary" ng-click="nextWord()">Next Word</button>
+                </div>
+                <div class="col-md-3">
+                    <button class="form-control btn btn-outline-danger">Accept, Migrate and Next</button>
+                </div>
+            </div>
+            <div class="row right-top" style="overflow: scroll;">
+                <div class="col-md-12" ng-repeat="(s1, s2) in migration_data.examples">
+                    
+                    <span>
+                        "[[ s2[0] ]]"
+                    </span>
+                    <br>
+                    <span>
+                        "[[ s2[1] ]]"
+                    </span>
+                    <hr>
+                </div>
+            </div>
+            <div class=" right-bottom" style="overflow: scroll;">
+                <div ng-repeat="(k, v) in migration_data.data">
+                    <span>[[k]]</span>
+                    <div ng-repeat="(w, f) in v track by $index" ng-class="$index % 2 == 0 ? 'row-highlight' : 'row-non-highlight' ">
+                        <div class="row">
+                            <div class="col-md-2" >
+                                <select class="form-control"  id="[['pos_'+k+$index]]">
+                                    <option value="" selected></option>
+                                    <option value="VERB">VERB</option>
+                                    <option value="NOUN">NOUN</option>
+                                    <option value="ADJECTIVE">ADJECTIVE</option>
+                                    <option value="EXPLANATION">EXPLANATION</option>
+                                    <option value="ADVERB">ADVERB</option>
+                                    <option value="PREPOSITION">PREPOSITION</option>
+                                    <option value="Phrasal_Verb">Phrasal_Verb</option>
+                                    <option value="ABBREVIATION">ABBREVIATION</option>
+                                    <option value="PHRASAL">PHRASAL</option>
+                                    <option value="CONJUNCTION">CONJUNCTION</option>
+                                    <option value="PRONOUN">PRONOUN</option>
+                                    <option value="EXCLAMATION">EXCLAMATION</option>
+                                    <option value="DETERMINER">DETERMINER</option>
+                                    <option value="NOT_KNOW_POS">NOT_KNOW_POS</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3" >
+                                <input class="form-control" value="[[ f[0] ]]" id="[['m_'+k+$index]]">
+                            </div>
+                            <div class="col-md-1">
+                                [[ f[1] ]]
+                            </div>
+                            <div class="col-md-3" >
+                                <input class="form-control" placeholder="Tags" id="[['tags_'+k+$index]]">
+                            </div>
+                            <div class="col-md-2" >
+                                <input class="form-control" placeholder="Inline" id="[['inline_'+k+$index]]">
+                            </div>
+                            <div class="col-md-1">
+                                <i class="fa fa-save fa-2x" ng-click="migrateMeaning([['pos_'+k+$index]], [['m_'+k+$index]], [['tags_'+k+$index]], [['inline_'+k+$index]])"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

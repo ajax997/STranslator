@@ -89,7 +89,7 @@ class nGraph():
         query = "match (n:ObjectEntity{objectEntity:\""+w+"\"})-[r:TRANS_EN_VI|:EXPLAINAION_VI_VI]->(v"+pos+")  return n,r,v order by r.freq desc"
         return self.__run_statement(query)
     def get_meaning_itself(self, w):
-        query = "match (n:ObjectEntity{objectEntity:\""+w+"\"})-[:LANG_POLY_MEANING]->(v) where exists(v.definition)  return labels(v) as lbs, v.definition as def ,ID(v) as id"
+        query = "match (n:ObjectEntity{objectEntity:\""+w+"\"})-[:LANG_POLY_MEANING]->(v) where exists(v.definition)  return labels(v) as lbs, v.definition as def ,ID(v) as id, ID(n) as root_id"
         return self.__run_statement(query)
     def get_en_synonynm(self, _id):
         query = 'match (n)-[:LANG_RELATED_SYNONYM]->(v) where id(n)='+str(_id) + " return v.objectEntity as s"
@@ -111,7 +111,7 @@ class nGraph():
         check_result = self.check_vn_meaning_exist(new_pos, new_m)
         print(check_result)
         print(new_tags, new_inline.strip() == "")
-        if (check_result != False and new_tags[0] == "" and new_inline == ""):
+        if (check_result != False and len(new_tags) == 0 and new_inline == ""):
             query = "match(n) match(v) where id(n) = {} and id(v) = {} create(n)-[:TRANS_EN_VI{{freq: {}}}]->(v)".format(from_id, check_result, new_freq)
             print(query)
             return self.__run_statement(query)
@@ -120,8 +120,6 @@ class nGraph():
                 .format(from_id, new_pos, new_m,str(new_tags), new_inline, new_freq).replace("[\"\"]", "[]").replace("['']", "[]")
             print(query)
             return self.__run_statement(query)
-
-
 
 
     #########################USER STUFFS############################

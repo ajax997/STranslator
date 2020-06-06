@@ -123,7 +123,7 @@ class GraphHelper():
         meta = {}
         results = r[1].records()
         for x in results:
-            label, defi, n_id = x['lbs'], x['def'], x['id']
+            label, defi, n_id, root_id = x['lbs'], x['def'], x['id'], x['root_id']
             arr_m = {}
             for l in label:
                 if l != "ObjectEntity":
@@ -141,6 +141,7 @@ class GraphHelper():
             meta['notes'] = []
             meta['pos'] = [x for x in pos_avai]
             meta['r_header'] = e_w
+            meta['root_id'] = root_id
         return {'meta': meta , 'jsondata':return_arr}
 
 
