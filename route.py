@@ -187,6 +187,16 @@ def add_english_rootnode():
     g.create_english_root_node(root_node)
     return "ok"
 
+@app.route("/manage/migrate/setcheckpoint", methods = ["POST"])
+def set_checkpoint():
+    data = request.get_json()
+    root_node = data['checkpoint']
+    g.update_checkpoint(root_node)
+    return "ok"
+@app.route("/manage/migrate/getcheckpoint", methods = ["POST"])
+def get_checkpoint():
+    return g.get_checkpoint()
+    
 
 ######################### Application Configuration ##########################
 

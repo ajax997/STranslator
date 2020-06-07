@@ -19,9 +19,74 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
                 $scope.config.current_word_index = $scope.config.list_words.indexOf($location.search().data);
             }
 
-
-
             changeUI($location.search().data);
+        });
+
+    }
+    $scope.searchWord = function()
+    {
+        $location.url($location.path() + "?data=" + $scope.config.search_keyword); 
+    }
+
+    function get_all_meaning_from_server(scope_array_obj) {
+        var r = [];
+        for (x in scope_array_obj)
+            r.push(scope_array_obj[x].m)
+        return r;
+
+    }
+
+    function remove_already_defined_meaning() {
+        var available = [];
+        var all_m = get_all_meaning_from_server($scope.returned_data.vn_meanings);
+        console.log(all_m);
+        for (m in all_m){
+            console.log(m);
+            for (key in $scope.migration_data.data)
+            {
+                for (index in $scope.migration_data.data[key])
+                {
+                    if ($scope.migration_data.data[key][index][0].replace(/_/g, " ") == all_m[m])
+                    {
+                        available.push(key+"|"+index);
+                    }
+                }
+            }
+        }
+        console.log(available);
+        for (removing_candidate in available)
+        {
+            var r_parts = available[removing_candidate].split("|");
+            delete $scope.migration_data.data[r_parts[0]][r_parts[1]];
+        }
+    }
+
+    $scope.setCheckPoint = function(){
+        $http({
+            method: 'POST',
+            url: "/manage/migrate/setcheckpoint",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            dataType: "json",
+            data: {
+                checkpoint: $location.search().data
+            }
+        }).then(function successCallback(response) {
+            
+        });
+    }
+
+    function getCheckPoint(){
+        $http({
+            method: 'POST',
+            url: "/manage/migrate/getcheckpoint",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            }
+          
+        }).then(function successCallback(response) {
+            $location.url($location.path() + "?data=" + response.data);
         });
 
     }
@@ -39,6 +104,8 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
             $scope.returned_data.vn_meanings = response.data.m_vn.jsondata;
             $scope.returned_data.viewing_of = response.data.m_vn.meta.r_header;
             $scope.returned_data.viewing_of_node_id = response.data.m_eng.meta.root_id;
+
+            remove_already_defined_meaning();
         });
 
     }
@@ -55,6 +122,7 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
         }).then(function successCallback(response) {
             $scope.migration_data.data = response.data[1];
             $scope.migration_data.examples = response.data[0];
+            console.log($scope.migration_data.data);
         });
 
     }
@@ -64,7 +132,11 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
         $scope.returned_data = {};
         $scope.migration_data = {};
         $scope.selected_data = {};
-        //getListWord();
+        if ($location.search().data == undefined) {
+            getCheckPoint();
+        }
+        
+        //
 
 
     }
@@ -72,7 +144,9 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
 
         if ($scope.config.current_word_index + 1 < $scope.config.list_words.length) {
             $scope.config.current_word_index += 1;
+            console.log($scope.config.current_word_index);
             $location.url($location.path() + "?data=" + $scope.config.list_words[$scope.config.current_word_index]);
+            $scope.setCheckPoint();
         }
     }
 
@@ -117,20 +191,13 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
                 },
                 data: tobe_sent
             }
-
-
             $http(req).then(function successCallback(response) {
-                    
+                getAvailableMeaning("/api/get?entry=" + $location.search().data);
             });
         }
-
-
-
-
     }
 
     $scope.$on('$locationChangeStart', function () {
-        console.log("first?");
         if ($location.search().data != undefined) {
             getListWord();
         }

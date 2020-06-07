@@ -43,3 +43,11 @@ body {
 .row-non-highlight{
     background-color: beige;
 }
+.ms_different{
+    font-size: 25px;
+    color: blue;
+}
+.ms_same{
+    font-size: 25px;
+    color: red;
+}

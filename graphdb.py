@@ -121,6 +121,15 @@ class nGraph():
             print(query)
             return self.__run_statement(query)
 
+    def update_checkpoint(self, checkpoint):
+        query = "match (n) where id(n) = 1122414 set n.checkpoint = \"{}\"".format(checkpoint)
+        return self.__run_statement(query)
+
+    def get_checkpoint(self):
+        query = "match (n) where id(n) = 1122414 return n.checkpoint as cp"
+        r = self.__run_statement(query)[1].records()
+        for n in r:
+            return n['cp']
 
     #########################USER STUFFS############################
 

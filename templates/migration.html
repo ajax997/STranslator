@@ -41,7 +41,9 @@
             <div>
                 <span>
                     Current Word: <a class="text-title" href="https://translate.google.com/#view=home&op=translate&sl=en&tl=vi&text=[[config.selected_word]]" target="_blank">[[config.selected_word]]</a>
-                    Viewing Word: <span>[[returned_data.viewing_of]] - Node ID: <a href="/manage/admin" target="_blank">[[returned_data.viewing_of_node_id]]</a></span>
+                    Viewing Word: <span ng-class="config.selected_word != returned_data.viewing_of ? 'ms_different': 'ms_same' ">[[returned_data.viewing_of]]</span> <span>- Node ID: <a href="/manage/admin" target="_blank">[[returned_data.viewing_of_node_id]]</a></span>
+                    Index: | [[config.current_word_index]] / [[config.list_words.length]] |
+                    Processed: [[config.current_word_index /config.list_words.length * 100 ]] %
                 </span>
             </div>
             <div class="row" ng-repeat="m in returned_data.vn_meanings">
@@ -59,16 +61,16 @@
         <div class="col-md-8 right-panel">
             <div class="row right-control">
                 <div class="col-md-3">
-                    <input class="form-control" placeholder="Search">
+                    <input class="form-control" ng-model="config.search_keyword" placeholder="Search">
                 </div>
                 <div class="col-md-3">
-                    <button class="form-control btn btn-outline-secondary">Search</button>
+                    <button class="form-control btn btn-outline-secondary" ng-click="searchWord()">Search</button>
                 </div>
                 <div class="col-md-3">
                     <button class="form-control btn btn-outline-secondary" ng-click="nextWord()">Next Word</button>
                 </div>
                 <div class="col-md-3">
-                    <button class="form-control btn btn-outline-danger">Accept, Migrate and Next</button>
+                    <button class="form-control btn btn-outline-danger" ng-click="setCheckPoint()">Save Check Point</button>
                 </div>
             </div>
             <div class="row right-top" style="overflow: scroll;">
