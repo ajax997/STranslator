@@ -23,9 +23,8 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
         });
 
     }
-    $scope.searchWord = function()
-    {
-        $location.url($location.path() + "?data=" + $scope.config.search_keyword); 
+    $scope.searchWord = function () {
+        $location.url($location.path() + "?data=" + $scope.config.search_keyword);
     }
 
     function get_all_meaning_from_server(scope_array_obj) {
@@ -40,28 +39,24 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
         var available = [];
         var all_m = get_all_meaning_from_server($scope.returned_data.vn_meanings);
         console.log(all_m);
-        for (m in all_m){
+        for (m in all_m) {
             console.log(m);
-            for (key in $scope.migration_data.data)
-            {
-                for (index in $scope.migration_data.data[key])
-                {
-                    if ($scope.migration_data.data[key][index][0].replace(/_/g, " ") == all_m[m])
-                    {
-                        available.push(key+"|"+index);
+            for (key in $scope.migration_data.data) {
+                for (index in $scope.migration_data.data[key]) {
+                    if ($scope.migration_data.data[key][index][0].replace(/_/g, " ") == all_m[m]) {
+                        available.push(key + "|" + index);
                     }
                 }
             }
         }
         console.log(available);
-        for (removing_candidate in available)
-        {
+        for (removing_candidate in available) {
             var r_parts = available[removing_candidate].split("|");
             delete $scope.migration_data.data[r_parts[0]][r_parts[1]];
         }
     }
 
-    $scope.setCheckPoint = function(){
+    $scope.setCheckPoint = function () {
         $http({
             method: 'POST',
             url: "/manage/migrate/setcheckpoint",
@@ -73,18 +68,18 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
                 checkpoint: $location.search().data
             }
         }).then(function successCallback(response) {
-            
+
         });
     }
 
-    function getCheckPoint(){
+    function getCheckPoint() {
         $http({
             method: 'POST',
             url: "/manage/migrate/getcheckpoint",
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             }
-          
+
         }).then(function successCallback(response) {
             $location.url($location.path() + "?data=" + response.data);
         });
@@ -122,7 +117,7 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
         }).then(function successCallback(response) {
             $scope.migration_data.data = response.data[1];
             $scope.migration_data.examples = response.data[0];
-            console.log($scope.migration_data.data);
+            console.log($scope.migration_data.examples);
         });
 
     }
@@ -135,7 +130,7 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
         if ($location.search().data == undefined) {
             getCheckPoint();
         }
-        
+
         //
 
 
@@ -146,6 +141,10 @@ app.controller('migrationController', ['$scope', '$http', '$location', '$mdDialo
             $scope.config.current_word_index += 1;
             console.log($scope.config.current_word_index);
             $location.url($location.path() + "?data=" + $scope.config.list_words[$scope.config.current_word_index]);
+
+            $scope.returned_data = {};
+            $scope.migration_data = {};
+            $scope.selected_data = {};
             $scope.setCheckPoint();
         }
     }

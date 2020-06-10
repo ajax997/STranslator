@@ -289,13 +289,17 @@ app.controller('adminPageControllerEditor', ['$scope', '$http', '$location', '$m
 
     $scope.init = function () {
         //checkLoginCredential();
+
         $scope.meaning_row_edit = {};
         $scope.meaning_row = {};
         $scope.selected_Keyword = "";
         $scope.selected_node = "";
         
 
-        // if ($location.search().data != undefined) {
+        if ($location.search().data != undefined) {
+            $scope.search_keyword = $location.search().data;
+            $scope.searchChanged(null);
+        }
         //     $scope.meaning_row.new_m_pos = "";
         //     $scope.meaning_row.new_m_meaning = "";
         //     $scope.meaning_row.new_m_tags = "";

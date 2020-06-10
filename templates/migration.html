@@ -41,7 +41,7 @@
             <div>
                 <span>
                     Current Word: <a class="text-title" href="https://translate.google.com/#view=home&op=translate&sl=en&tl=vi&text=[[config.selected_word]]" target="_blank">[[config.selected_word]]</a>
-                    Viewing Word: <span ng-class="config.selected_word != returned_data.viewing_of ? 'ms_different': 'ms_same' ">[[returned_data.viewing_of]]</span> <span>- Node ID: <a href="/manage/admin" target="_blank">[[returned_data.viewing_of_node_id]]</a></span>
+                    Viewing Word: <span ng-class="config.selected_word != returned_data.viewing_of ? 'ms_different': 'ms_same' ">[[returned_data.viewing_of]]</span> <span>- Node ID: <a href="/manage/admin#!?data=[[config.selected_word]]" target="_blank">[[returned_data.viewing_of_node_id]]</a></span>
                     Index: | [[config.current_word_index]] / [[config.list_words.length]] |
                     Processed: [[config.current_word_index /config.list_words.length * 100 ]] %
                 </span>

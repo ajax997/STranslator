@@ -9,11 +9,15 @@ import hashlib
 from flask import Flask, session
 import configparser
 import pickle
-
+import spacy
+import operator
 
 list_words = pickle.load(open("guessing.pkl", 'rb'))
 list_words_exp = pickle.load(open("w_no_meaning.pkl", 'rb'))
+list_words_in_order = [w for w, _ in (sorted({k:  len(v) for k, v in list_words_exp.items()}.items(), key=operator.itemgetter(1), reverse=True))]
 
+# Load English tokenizer, tagger, parser, NER and word vectors
+nlp = spacy.load("en_core_web_sm")
 app = Flask(__name__)
 
 
@@ -102,7 +106,7 @@ def meaning():
 @app.route("/api/migration", methods=['get'])
 def migration_info():
     entry = request.args.get('data').strip().lower()
-    return json.dumps([list_words_exp[entry][:20], list_words[entry]])
+    return json.dumps([[["Number Of Sentence", len(list_words_exp[entry])]]+list_words_exp[entry][:20], list_words[entry]])
 
 @app.route("/api/get_example", methods=["POST"])
 def get_example_sentences():
@@ -114,6 +118,16 @@ def get_list_search():
     entry = request.args.get('entry').strip().lower()
     return json.dumps(g.search_english_node(entry))
 
+@app.route("/api/analyze", methods=['get'])
+def analyze():
+    entry = request.args.get('entry').strip().lower()
+    analyze_result = {"POS": [], "Noun phrases" : [], "Verbs": [], "Entities": []}
+    doc = nlp(entry)
+    analyze_result['POS'] = [[e.lower_, e.pos_] for e in doc]
+    analyze_result['Noun phrases'] = [chunk.text for chunk in doc.noun_chunks]
+    analyze_result['Verbs'] = [token.lemma_ for token in doc if token.pos_ == "VERB"]
+    analyze_result['Entities'] = [x.text for x in doc.ents]
+    return json.dumps(analyze_result)
 
 def get_meaning_json(w):
     # check if the node is exitsts
@@ -145,7 +159,7 @@ def migration():
     return render_template("migration.html")
 @app.route("/migration/get-list-words")
 def get_list_word():
-    return json.dumps([x for x in list_words.keys()])
+    return json.dumps(list_words_in_order)
 
 @app.route("/manage/admin")
 def access_admin_page():
@@ -154,6 +168,10 @@ def access_admin_page():
 @app.route("/manage/admin_login")
 def render_modal_admin_login():
     return render_template("admin_login_form.html")
+
+@app.route("/manage/analyze")
+def render_analyze():
+    return render_template("analyze.html")
 
 @app.route("/manage/login", methods=['post'])
 def admin_login():
