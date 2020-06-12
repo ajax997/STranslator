@@ -91,14 +91,17 @@
                     <span>[[k]]</span>
                     <div ng-repeat="(w, f) in v track by $index" ng-class="$index % 2 == 0 ? 'row-highlight' : 'row-non-highlight' ">
                         <div class="row">
+                            <div class="col-md-1">
+                                <i class="fa fa-save fa-2x" ng-click="migrateMeaning([['pos_'+k+$index]], [['m_'+k+$index]], [['tags_'+k+$index]], [['inline_'+k+$index]])"></i>
+                            </div>
                             <div class="col-md-2" >
                                 <select class="form-control"  id="[['pos_'+k+$index]]">
                                     <option value="" selected></option>
                                     <option value="VERB">VERB</option>
                                     <option value="NOUN">NOUN</option>
                                     <option value="ADJECTIVE">ADJECTIVE</option>
-                                    <option value="EXPLANATION">EXPLANATION</option>
                                     <option value="ADVERB">ADVERB</option>
+                                    <option value="EXPLANATION">EXPLANATION</option>
                                     <option value="PREPOSITION">PREPOSITION</option>
                                     <option value="Phrasal_Verb">Phrasal_Verb</option>
                                     <option value="ABBREVIATION">ABBREVIATION</option>
@@ -107,6 +110,8 @@
                                     <option value="PRONOUN">PRONOUN</option>
                                     <option value="EXCLAMATION">EXCLAMATION</option>
                                     <option value="DETERMINER">DETERMINER</option>
+                                    <option value="INTJ">INTJ</option>
+                                    
                                     <option value="NOT_KNOW_POS">NOT_KNOW_POS</option>
                                 </select>
                             </div>
@@ -122,9 +127,7 @@
                             <div class="col-md-2" >
                                 <input class="form-control" placeholder="Inline" id="[['inline_'+k+$index]]">
                             </div>
-                            <div class="col-md-1">
-                                <i class="fa fa-save fa-2x" ng-click="migrateMeaning([['pos_'+k+$index]], [['m_'+k+$index]], [['tags_'+k+$index]], [['inline_'+k+$index]])"></i>
-                            </div>
+                           
 
                         </div>
                     </div>
