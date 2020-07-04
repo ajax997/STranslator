@@ -1,0 +1,155 @@
+<md-dialog class="md-dialog-practice" ng-model='dialog_header' aria-label="dialog_header">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <span ng-if="test_stuffs.header != '' && test_stuffs.header != undefined ">
+
+                    <h2><i class="fa fa-cog faa-spin animated"></i> [[test_stuffs.header]]</h2>
+                </span>
+
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <a style="font-family: fontawesome !important;" class="far fa-times-circle"></a>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:[[(test_stuffs.current_question+1 / test_stuffs.number_of_question)*100]]%">
+                    [[(test_stuffs.current_question_number+1 / test_stuffs.number_of_question)*100]]%
+                </div>
+                <div class="row">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="form-control control-text">
+                        No of Questions
+                    </span>
+                    <select class="form-control" ng-model="test_stuffs.number_of_question">
+                        <option value="10">10</option>
+                        <option value="15" selected>15</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                        <option value="70">70</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+
+
+                <div class="col-md-3">
+                    <span class="form-control control-text">
+                        Level
+                    </span>
+                    <select class="form-control">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                        <option value="epic">Epic</option>
+                        <option value="crazy">Crazy</option>
+                        <option value="mix">Mixing Levels</option>
+                    </select>
+
+                </div>
+                <div class="col-md-3">
+                    <span class="form-control control-text">
+                        Saved Time
+                    </span>
+                    <select class="form-control" ng-model="test_stuffs.choosen_by">
+                        <option value="recent">Recent</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="random">Random</option>
+                    </select>
+
+                </div>
+                <div class="col-md-2">
+                    <span class="form-control control-text">
+                        
+                    </span>
+                    <button class="form-control" ng-click="startTest()">
+                        Start
+                    </button>
+                </div>
+            </div>
+            <div>
+                <div class="test-header">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+
+                                </div>
+                                <div class="col-md-6">
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-question">
+                    <p>
+                        [[test_stuffs.current_question]]
+                    </p>
+
+                </div>
+                <div class="test-content">
+                    <div class="radio">
+                        <i class="fa fa-check answer-green" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer==1"></i>
+                        <i class="fa fa-times-circle-o answer-red" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer>0 && test_stuffs.multiple_choice_correct_answer != 1 "></i>
+                        <label><input type="radio" name="optradio">[[test_stuffs.question_1]]</label>
+                    </div>
+                    <div class="radio">
+                        <i class="fa fa-check answer-green" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer==2"></i>
+                        <i class="fa fa-times-circle-o answer-red" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer>0 && test_stuffs.multiple_choice_correct_answer != 2 "></i>
+                        <label><input type="radio" name="optradio">[[test_stuffs.question_2]]</label>
+                    </div>
+                    <div class="radio">
+                        <i class="fa fa-check answer-green" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer==3"></i>
+                        <i class="fa fa-times-circle-o answer-red" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer>0 && test_stuffs.multiple_choice_correct_answer != 3 "></i>
+                        <label><input type="radio" name="optradio">[[test_stuffs.question_3]]</label>
+                    </div>
+                    <div class="radio">
+                        <i class="fa fa-check answer-green" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer==4"></i>
+                        <i class="fa fa-times-circle-o answer-red" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer>0 && test_stuffs.multiple_choice_correct_answer != 4 "></i>
+                        <label><input type="radio" name="optradio">[[test_stuffs.question_4]]</label>
+                    </div>
+                    <div class="radio">
+                        <i class="fa fa-check answer-green" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer==5"></i>
+                        <i class="fa fa-times-circle-o answer-red" aria-hidden="true"
+                            ng-if="test_stuffs.multiple_choice_correct_answer>0 && test_stuffs.multiple_choice_correct_answer != 5 "></i>
+                        <label><input type="radio" name="optradio">[[test_stuffs.question_5]]</label>
+                    </div>
+                </div>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button  md-autofocus ng-click="test_submit()">
+                Submit
+            </md-button>
+            <md-button md-autofocus ng-click="test_load_previous_question()">
+                Previous
+            </md-button>
+            <md-button md-autofocus ng-click="test_load_next_question()">
+                Next
+            </md-button>
+            <span flex></span>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -1,0 +1,72 @@
+<md-dialog class="md-dialog-bigger" ng-model='dialog_header' aria-label="dialog_header">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <a style="font-family: fontawesome !important;" class="far fa-times-circle"></a>
+                  </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="row" id="saved_toolbar">
+                <div class="col-md-5">
+                    <input class="form-control" placeholder="Search" id="saved_search">
+                </div>
+                <div class="col-md-5 ">
+                    <i class="fa fa-arrow-circle-left saved-form-control" aria-hidden="true" ng-click="decreaseBookmarkPage()"></i>
+                    <span class="saved-form-control">[[bookmarked_stuffs.current_page+1]] of [[bookmarked_stuffs.number_of_page]]</span>
+                    <i class="fa fa-arrow-circle-right saved-form-control" aria-hidden="true" ng-click="increaseBookmarkPage()"></i>
+                </div>
+                <div class="col-md-2 ">
+
+                    <i class="fa fa-sort-alpha-asc saved-form-control" aria-hidden="true"></i>
+
+                    <i class="fa fa-calendar saved-form-control" aria-hidden="true"></i>
+                </div>
+            </div>
+            <hr>
+            
+            <div class="saved-items-wrapper">
+            <div ng-repeat="item in bookmarked_stuffs.current_bookmark_items" class="saved-item-row">
+                <div class="row ">
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-12">
+                               [[item.src_lang]] -> [[item.dest_lang]]
+                            </div>
+                        </div>
+    
+                        <div class="row">
+                            <div class="col-md-12">
+                                [[item.src_text]]
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                [[item.dest_text]]
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        Delete
+                    </div>
+                    
+                </div>
+                <hr>
+            </div>
+            </div>
+            
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button md-autofocus ng-click="practicePopulate($event)">
+                Practice
+            </md-button>
+            <span flex></span>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

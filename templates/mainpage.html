@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/mainpage.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main_login.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/util.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/font-awesome-animation.min.css') }}">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <!-- Latest compiled and minified JavaScript -->
@@ -34,12 +35,11 @@
     <link rel="stylesheet"
         href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css">
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.7.6/angular-sanitize.js"></script>
-
     <script src="{{ url_for('static', filename='js/main.js') }} "></script>
     <title>STranslator</title>
 </head>
 
-<body ng-app='stranslator' ng-controller='autoPopulateData' data-ng-init="init()">
+<body ng-app='stranslator' ng-controller='autoPopulateData' data-ng-init="init()" ng-cloak>
 
     <div class="site-header">
         <div class='row'>
@@ -49,14 +49,22 @@
             <div class="col-6 d-sm-block d-none d-sm-none d-md-block"><span id="site-title">Smart Translator</span></div>
             <div class='col-5 col-xs-6'>
                 <div class='profile' ng-if='is_user_login'>
-                    <span>[[logged_username]]</span>
+                    <!-- <span>[[logged_username]]</span>
                     <span><i class="fa fa-sign-out" aria-hidden="true" ng-click="user_logout()"></i><md-tooltip md-direction="bottom">Logout</md-tooltip></span>
-                    
+                     -->
+                     <div class="dropdown">
+                        <span class="dropbtn">[[logged_username]]</span>
+                        <!-- <button class="dropbtn">Dropdown</button> -->
+                        <div class="dropdown-content">
+                        <a class="account_option" ng-click="showSavedItems($event)">Saved Words</a>
+                        <a class="account_option">Profile</a>
+                        <a class="account_option" ng-click="user_logout()">Logout</a>
+                        </div>
+                      </div>
                 </div>
                 <div class='login' ng-if="!is_user_login">
                     <a class="profile_button" id='login_icon' ng-click="showLogin($event)">Login / Sign Up</a>
                 </div>
-
             </div>
         </div>
 
@@ -68,7 +76,7 @@
             <div class='row'>
                 <div autoGrow class='input-operators col-md-6'>
 
-                    <div class='display-content' ng-model='initValue'>
+                    <div class='display-content' onresize="resize_func()"  ng-model='initValue'>
 
                         <textarea ng-keyup="autoExpand($event)" id='main-input' contenteditable="true"
                             ng-change='inputChange(input_text)' ng-model='input_text'
@@ -83,26 +91,37 @@
                         <div class='context-buttons'>
                             <div class='row'>
                                 <div class="col-md-6 source-audio-icons">
-                                    <span>
-                                        <img class="source-button" ng-if="input_text != ''"
+                                    <span ng-if="input_text != ''">
+                                        <!-- <img class="source-button" ng-if="input_text != ''"
                                             src="{{ url_for('static', filename='images/speak.png') }} "
-                                            style="width: 20px; height: 20px;" alt="">
+                                            style="width: 20px; height: 20px;" alt=""> -->
+                                            <i class="fa fa-volume-up translated-util-icon" aria-hidden="true"></i>
                                         <md-tooltip md-direction="top" ng-if="k.inline_expl!=''">
                                             Speak</md-tooltip>
                                     </span>
-                                    <span>
-                                        <img class="source-button" ng-if="input_text != ''" ng-click="showAdvanced($event)"
+                                    <span ng-if="input_text != ''">
+                                        <!-- <img class="source-button" ng-if="input_text != ''" ng-click="showAdvanced($event)"
                                             src="{{ url_for('static', filename='images/link.png') }} "
-                                            style="width: 15px; height: 15px;" alt="">
+                                            style="width: 15px; height: 15px;" alt=""> -->
+                                            <i class="fa fa-link translated-util-icon" aria-hidden="true" ng-click="showAdvanced($event)"></i>
                                         <md-tooltip md-direction="top" ng-if="k.inline_expl!=''">
                                             Search for references</md-tooltip>
                                     </span>
+
+                                    <span ng-if="logged_username == 'admin'">
+                                        <!-- <img class="source-button" ng-if="input_text != ''" ng-click="showAdvanced($event)"
+                                            src="{{ url_for('static', filename='images/link.png') }} "
+                                            style="width: 15px; height: 15px;" alt=""> -->
+                                            <i class="fa fa-pencil-square-o translated-util-icon" aria-hidden="true" ng-click="editPageForAdmin()"></i>
+                                        <md-tooltip md-direction="top" ng-if="k.inline_expl!=''">
+                                            Edit</md-tooltip>
+                                    </span>
+
                                 </div>
                                 <div class="col-md-6 text-length">
                                     <span>[[input_text.length==0? 0:input_text.length +'/'+500 ]]</span>
 
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -112,17 +131,31 @@
                         <div ng-if='show_waiting_mess' class='waiting-for-result'>
                             <span>Translating...</span>
                         </div>
-                        <div class='translated-result' ng-model='translatedResult'>
+                        <div class='translated-result' id="translated_result_id" ng-model='translatedResult'>
                             [[translatedResult]]
                         </div>
                         <div class='context-buttons dest-icon'>
                             <div class='row'>
                                 <div class="col-md-6">
-
+                                    
                                 </div>
                                 <div class="col-md-6">
-
-
+                                    <div style="text-align: right;" ng-if="input_text != '' && !show_waiting_mess ">
+                                        <span>
+                                            <md-tooltip md-direction="left">
+                                                Report this translation</md-tooltip>
+                                                <i class="fa fa-flag translated-util-icon" aria-hidden="true"></i>
+                                        </span>
+                                        <span ng-if="!translation_saved">
+                                            <md-tooltip md-direction="left">
+                                                Save this translation</md-tooltip>
+                                            <i class="fa fa-save fa-2x translated-util-icon" ng-click="save_translation()"></i>
+                                        </span>
+                                        <span ng-if="translation_saved">
+                                            <i class="fa fa-check translated-util-icon" aria-hidden="true" ng-click="unsave_translation()" style="color: #ac9c02;"></i>
+                                        </span>
+                                        
+                                    </div>
                                 </div>
 
                             </div>
@@ -231,6 +264,9 @@
 </style>
 <script>
     autosize(document.getElementById("main-input"));
+
+
+    
 </script>
 
 </html>

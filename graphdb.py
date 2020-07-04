@@ -33,6 +33,11 @@ class nGraph():
         r = self.__run_statement(cypher_s)[1].records()
         for n in r:
             return n['res']
+
+    def check_translation_saved(self, cypher_s):
+        r = self.__run_statement(cypher_s)[1].records()
+        for n in r:
+            return n['res']
     
     def get_direct_meaning_node(self, entity, r_type):
         query = "MATCH(n:ObjectEntity{objectEntity:\""+entity+"\"})-[r:"+r_type+"]->(v:ROOTNODE) return v.objectEntity as root"

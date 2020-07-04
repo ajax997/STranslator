@@ -11,6 +11,7 @@ import configparser
 import pickle
 import spacy
 import operator
+from flask import Response
 
 list_words = pickle.load(open("guessing.pkl", 'rb'))
 list_words_exp = pickle.load(open("w_no_meaning.pkl", 'rb'))
@@ -87,7 +88,13 @@ def logout():
     session.pop('current_login_user', None)
     return render_template("mainpage.html")
 
+@app.route("/bookmarks")
+def render_bookmarks_template():
+    return render_template("bookmarks.html")
 
+@app.route("/practice")
+def render_pratice_template():
+    return render_template("saved_practice.html")
 
 @app.route("/signup", methods=['POST'])
 def signup_user():
@@ -102,6 +109,56 @@ def meaning():
     entry = request.args.get('entry').strip().lower()
     # return json.dumps(get_meaning_json(entry))
     return json.dumps(get_meaning_json(entry))
+
+###################### bookmarking stuff ##################
+
+@app.route("/api/bookmark", methods=['POST'])
+def bookmark():
+    data = request.get_json()
+    print(data)
+    print(data["saving_obj"])
+    ghelper.create_saving_item(data["saving_obj"])
+    return "ok"
+
+@app.route("/api/unbookmark", methods=['POST'])
+def unbookmark():
+    data = request.get_json()
+    print(data)
+    ghelper.delete_saving_item(data["saving_obj"])
+    return "ok"
+
+@app.route("/api/checksavedtranslation", methods=['POST'])
+def translation_is_saved():
+    data = request.get_json()
+    print(data["saving_obj"])
+    return json.dumps(ghelper.check_translation_saved(data["saving_obj"]))
+
+@app.route("/api/getsaveditem", methods=['get'])
+def get_saved_item():
+    if session.get('current_login_user') is not None:
+        sortby = request.args.get('sortedby').strip().lower()
+        page_number = int(request.args.get('page').strip().lower())
+        return json.dumps(ghelper.get_saved_items_from_user(session.get('current_login_user'), sortby, page_number))
+    else:
+        return Response("{'error':'unauthorized user'}", status=401, mimetype='application/json')
+
+@app.route("/api/getnumbersaveditem", methods=['get'])
+def get_saved_item_number():
+    if session.get('current_login_user') is not None:
+        
+        return json.dumps(ghelper.get_number_saved_items_from_user(session.get('current_login_user')))
+    else:
+        return Response("{'error':'unauthorized user'}", status=401, mimetype='application/json')
+
+@app.route("/api/gettestdata", methods=['get'])
+def get_test_data():
+    if session.get('current_login_user') is not None:
+        return json.dumps(ghelper.get_test_data(session.get('current_login_user'),int(request.args.get('number').strip().lower()), request.args.get('choosenby').strip().lower()))
+    else:
+        return Response("{'error':'unauthorized user'}", status=401, mimetype='application/json')
+
+###################### end bookmarking stuff ##################
+
 
 @app.route("/api/migration", methods=['get'])
 def migration_info():

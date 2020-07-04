@@ -17,6 +17,7 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
         });
     }
 
+
     function getWikiSummary(keyword, newScope, ev) {
 
         $http({
@@ -52,13 +53,93 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
         });
     }
 
+    function load_bookmark() {
+        if ($scope.bookmarked_stuffs.sortedby == undefined && $scope.bookmarked_stuffs.current_page != undefined) {
+            $scope.bookmarked_stuffs.sortedby = "date";
+        }
+        var req = {
+            method: 'GET',
+            url: '/api/getsaveditem?sortedby=' + $scope.bookmarked_stuffs.sortedby + "&page=" + $scope.bookmarked_stuffs.current_page,
+        }
+
+        $http(req).then(function successCallback(response) {
+            $scope.bookmarked_stuffs.current_bookmark_items = response.data;
+        }, function () {
+            
+        });
+    }
+
+    $scope.$watch("bookmarked_stuffs.current_page", function () {
+        console.log("watch init")
+        if ($scope.bookmarked_stuffs.sortedby != undefined)
+            load_bookmark();
+    });
+    $scope.increaseBookmarkPage = function()
+    {
+        if ($scope.bookmarked_stuffs.current_page + 1 < $scope.bookmarked_stuffs.number_of_page )
+        {
+            $scope.bookmarked_stuffs.current_page += 1 
+        }
+    }
+    $scope.decreaseBookmarkPage = function()
+    {
+        if ($scope.bookmarked_stuffs.current_page - 1 >= 0 )
+        {
+            $scope.bookmarked_stuffs.current_page -= 1 
+        }
+    }
+
+    $scope.showSavedItems = function (ev) {
+        console.log("init")
+        if ($scope.bookmarked_stuffs.cached == undefined) {
+            var req = {
+                method: 'GET',
+                url: '/api/getnumbersaveditem',
+            }
+
+            $http(req).then(function successCallback(response) {
+                $scope.bookmarked_stuffs.number_of_bookmark = response.data;
+                $scope.bookmarked_stuffs.number_of_page = response.data / 10;
+                if ($scope.bookmarked_stuffs.number_of_page > 0) {
+                    $scope.bookmarked_stuffs.sortedby = "date";
+                    $scope.bookmarked_stuffs.current_page = 0;
+
+                    // load_bookmark(0)
+                }
+            }, function () {
+                
+            });
+        }
+        $mdDialog.show({
+            controller: DialogController,
+            templateUrl: 'bookmarks',
+            scope: $scope,
+            preserveScope: true,
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true
+        });
+    }
+
+    $scope.practicePopulate = function(ev){
+        $mdDialog.cancel();
+        console.log("efef");
+        $mdDialog.show({
+            controller: DialogController,
+            templateUrl: 'practice',
+            scope: $scope,
+            preserveScope: true,
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true
+        });
+    }
+
     function getInitialMeaning(input) {
         var r_text = "";
         var r_score = 0;
-        for (var i = 0; i< input.jsondata.length; i++)
-        {
-            if (input.jsondata[i].freq > r_score)
-            {
+        for (var i = 0; i < input.jsondata.length; i++) {
+            if (input.jsondata[i].freq > r_score) {
                 r_text = input.jsondata[i].m;
                 r_score = input.jsondata[i].freq;
             }
@@ -83,6 +164,7 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
     };
 
     $scope.loginOrSignup = function () {
+        $scope.dialog_header = "";
         if ($scope.login_action == "Login") {
             var req = {
                 method: 'POST',
@@ -97,11 +179,14 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
             }
 
             $http(req).then(function successCallback(response) {
-                if (response.data != false) {
+                if (response.data != false && response.data != "false") {
                     console.log(response.data);
                     $scope.is_user_login = true;
                     $scope.logged_username = response.data;
                     $mdDialog.cancel();
+                    $window.location.reload();
+                } else {
+                    $scope.dialog_header = "Incorrect Username or Password!"
                 }
 
             }, function () {
@@ -154,15 +239,7 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
             $mdDialog.hide(answer);
         };
     }
-    // function sort_callback_result(arr)
-    // {
-    //     function compare(a, b){
-    //         if (a.freq > b.freq)
-    //         return 1;
-    //         return -1;
-    //     }
-    //     return arr.sort(compare);
-    // }
+
 
     function getResponse(input) {
         if (input == '') {
@@ -180,6 +257,7 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
             $scope.dest_r_header = ''
             $scope.dest_notes = []
             $scope.source_notes = []
+            $scope.translation_saved = false;
         } else {
 
             var url = '/api/get?entry=' + input;
@@ -213,6 +291,7 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
                     $scope.dest_notes = response.data.m_vn.meta.notes;
                     $scope.source_notes = response.data.m_eng.meta.notes;
                     $scope.translatedResult = getInitialMeaning(response.data.m_vn);
+                    isSavedTranslation();
                 }
 
             }, function errorCallback(response) {
@@ -232,8 +311,8 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
             },
             dataType: "json"
         }).then(function successCallback(response) {
-
-            if (response.data != 'false') {
+            console.log(typeof (response.data));
+            if (response.data != "false" && response.data != false) {
                 $scope.is_user_login = true;
                 $scope.logged_username = response.data;
             } else {
@@ -252,6 +331,7 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
             },
             dataType: "json"
         }).then(function successCallback(response) {
+            $scope.is_user_login = false;
             $window.location.reload();
         });
     }
@@ -273,10 +353,12 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
     $scope.init = function () {
 
         checkLoginCredential();
-
+        $scope.bookmarked_stuffs = {};
+        $scope.test_stuffs = {};
         if ($location.search().data != undefined)
             $location.url($location.path() + "?data=" + $location.search().data);
         else {
+            
             $scope.prediction_text = '';
             $scope.translate_result = []
             $scope.pos_types = []
@@ -293,10 +375,33 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
 
     }
     $scope.inputChange = function (input) {
+
         $location.url($location.path() + "?data=" + input);
 
 
     };
+
+    $scope.autoExpand = function (event) {
+
+        var target = document.getElementById("translated_result_id");
+
+
+        target.style.height = document.getElementById("main-input").style.height;
+
+    }
+
+    $scope.$watch("show_waiting_mess", function () {
+
+        var target = document.getElementById("translated_result_id");
+        if ($scope.show_waiting_mess == true) {
+            $scope.translatedResult = "";
+            target.style.height = document.getElementById("main-input").style.height - 25;
+        } else {
+
+            target.style.height = document.getElementById("main-input").style.height;
+        }
+
+    });
 
     $scope.listSlelectedTag = [];
 
@@ -324,7 +429,15 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
         //getResponse(input);
     };
 
-    $scope.show_example_sentences = function(node_id, m){
+    function getCurrentDateTime() {
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date + ' ' + time;
+        return dateTime;
+    }
+
+    $scope.show_example_sentences = function (node_id, m) {
         $http({
             method: 'POST',
             url: "/api/get_example",
@@ -349,8 +462,143 @@ app.controller('autoPopulateData', ['$scope', '$http', '$location', '$mdDialog',
                 clickOutsideToClose: true
             });
         });
+
+    }
+
+    $scope.save_translation = function () {
+        if ($scope.is_user_login != true) {
+            $scope.showLogin(null);
+        } else {
+            $http({
+                method: 'POST',
+                url: "/api/bookmark",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                dataType: "json",
+                data: {
+                    saving_obj: {
+                        owner: $scope.logged_username,
+                        src_lang: "english",
+                        dest_lang: "vietnamese",
+                        src_text: $scope.input_text,
+                        dest_text: $scope.translatedResult,
+                        created: getCurrentDateTime()
+                    }
+                }
+            }).then(function successCallback(response) {
+                $scope.translation_saved = true;
+            });
+
+        }
+    }
+
+
+    function isSavedTranslation() {
+        if ($scope.is_user_login == true) {
+            $http({
+                method: 'POST',
+                url: "/api/checksavedtranslation",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                dataType: "json",
+                data: {
+                    saving_obj: {
+                        owner: $scope.logged_username,
+                        src_lang: "english",
+                        dest_lang: "vietnamese",
+                        src_text: $scope.input_text,
+                        dest_text: $scope.translatedResult
+                    }
+                }
+            }).then(function successCallback(response) {
+                if (response.data == 'true') {
+                    $scope.translation_saved = true;
+                } else {
+                    $scope.translation_saved = false;
+                }
+            });
+        }
+    }
+
+
+
+    $scope.unsave_translation = function () {
+        $http({
+            method: 'POST',
+            url: "/api/unbookmark",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            dataType: "json",
+            data: {
+                saving_obj: {
+                    owner: $scope.logged_username,
+                    src_lang: "english",
+                    dest_lang: "vietnamese",
+                    src_text: $scope.input_text,
+                    dest_text: $scope.translatedResult
+                }
+            }
+        }).then(function successCallback(response) {
+            $scope.translation_saved = false;
+        });
+    }
+
+    $scope.editPageForAdmin = function()
+    {
+        window.open("/manage/admin#!?data="+$scope.input_text, "_blank");
+    }
+//################################test/////////////////////////////
+
+    $scope.$watch("test_stuffs.current_question_number", function(){
+        console.log("test_current"+$scope.test_stuffs.current_question);
+        if ($scope.test_stuffs.current_question_number != undefined)
+        {
+            generateQuestion($scope.test_stuffs.current_question_number);
+        }
+    });
+
+    function generateQuestion(quest_index){
+        var word = $scope.test_stuffs.source[quest_index];
+        $scope.test_stuffs.current_question = word;
+        $scope.test_stuffs.question_1 = "question 1 ne";
+        $scope.test_stuffs.question_2 = "question 2 ne";
+        $scope.test_stuffs.question_3 = "question 3 ne";
+        $scope.test_stuffs.question_4 = "question 4 ne";
+        $scope.test_stuffs.question_5 = "question 5 ne";
+       
+    }
+
+    $scope.startTest = function()
+    {  
+        $scope.test_stuffs.header = "Generating Question List...";
+        $http({
+            method: 'get',
+            url: "/api/gettestdata?number="+$scope.test_stuffs.number_of_question+"&choosenby="+$scope.test_stuffs.choosen_by,
+           
+        }).then(function successCallback(response) {
+            $scope.test_stuffs.source = response.data;
+            $scope.test_stuffs.current_question_number = 0;
+            $scope.test_stuffs.header = "";
+        });
+    }
+    $scope.test_submit = function(){
+        //TODO
+        $scope.test_stuffs.multiple_choice_correct_answer = 1;
+    }
+    $scope.test_load_next_question = function(){
+        if ($scope.test_stuffs.current_question_number +1 < parseInt($scope.test_stuffs.number_of_question))
+        {
+            $scope.test_stuffs.current_question_number += 1;
+        }
+    }
+    $scope.test_load_previous_question = function(){
         
     }
+
+    //##########################################
 
     $scope.$on('$locationChangeStart', function () {
         if ($location.search().data != undefined) {

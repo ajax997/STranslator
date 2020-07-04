@@ -4,6 +4,7 @@ from autocorrect import Speller
 import json
 import re
 from pyvi import ViUtils
+import random
 
 class GraphHelper():
     def __init__(self,graph):
@@ -115,6 +116,77 @@ class GraphHelper():
         # return_content['g_tags'] = [x for x in tag_avai]
         return_content['jsondata'] = arr_r 
         return return_content
+
+    def create_saving_item(self, saving_obj):
+        owner = saving_obj['owner'].replace('"', '\\"')
+        src_lang = saving_obj['src_lang'].replace('"', '\\"')
+        dest_lang = saving_obj['dest_lang'].replace('"', '\\"')
+        src_text = saving_obj['src_text'].replace('"', '\\"')
+        dest_text = saving_obj['dest_text'].replace('"', '\\"')
+        created = saving_obj["created"].replace('"', '\\"')
+
+        query = "MATCH (N:User{{username: \"{}\" }}) CREATE (V:SAVED_ITEM {{ src_lang : \"{}\", dest_lang: \"{}\", src_text : \"{}\",  dest_text: \"{}\", created : \"{}\" }}) CREATE (N)-[:USER_SAVED_ITEM]->(V)".format(owner,src_lang,  dest_lang, src_text, dest_text, created)
+        print(query)
+        self.g.run_raw_query(query)
+    
+    def delete_saving_item(self, saving_obj):
+        owner = saving_obj['owner'].replace('"', '\\"')
+        src_lang = saving_obj['src_lang'].replace('"', '\\"')
+        dest_lang = saving_obj['dest_lang'].replace('"', '\\"')
+        src_text = saving_obj['src_text'].replace('"', '\\"')
+        dest_text = saving_obj['dest_text'].replace('"', '\\"')
+        query = "MATCH (N:User{{username: \"{}\" }})-[:USER_SAVED_ITEM]->(V:SAVED_ITEM {{ src_lang : \"{}\", dest_lang: \"{}\", src_text : \"{}\",  dest_text: \"{}\"}}) detach delete V".format(owner,src_lang,  dest_lang, src_text, dest_text)
+        self.g.run_raw_query(query)
+
+    def check_translation_saved(self, saving_obj):
+        owner = saving_obj['owner'].replace('"', '\\"')
+        src_lang = saving_obj['src_lang'].replace('"', '\\"')
+        dest_lang = saving_obj['dest_lang'].replace('"', '\\"')
+        src_text = saving_obj['src_text'].replace('"', '\\"')
+        dest_text = saving_obj['dest_text'].replace('"', '\\"')
+        query = "MATCH (N:User{{username: \"{}\" }})-[:USER_SAVED_ITEM]->(V:SAVED_ITEM {{ src_lang : \"{}\", dest_lang: \"{}\", src_text : \"{}\",  dest_text: \"{}\"}}) return count(V) <> 0 as res".format(owner,src_lang,  dest_lang, src_text, dest_text)
+        return self.g.check_translation_saved(query)
+
+    def get_saved_items_from_user(self, user, sorted_by, page):
+        query = "match (n:User{{username:\"{}\"}})-[:USER_SAVED_ITEM]->(V:SAVED_ITEM) return V as r order by V.{} skip {} limit 10"\
+            .format(user, "created" if sorted_by=="date" else "src_text", page*10)
+
+        r = self.g.run_raw_query(query)
+        results = r[1].records()
+        return_data = []
+        for x in results:
+            return_data.append({"src_lang": x['r']['src_lang'], "dest_lang": x['r']["dest_lang"], "src_text": x['r']["src_text"], "dest_text": x['r']["dest_text"]})
+        return return_data
+
+    def get_saved_entities(self, user):
+        query = "match (n:User{{username:\"{}\"}})-[:USER_SAVED_ITEM]->(V:SAVED_ITEM) return V as r order by V.{}"\
+            .format(user, "created")
+
+        r = self.g.run_raw_query(query)
+        results = r[1].records()
+        return_data = []
+        for x in results:
+            return_data.append({"src_lang": x['r']['src_lang'], "dest_lang": x['r']["dest_lang"], "src_text": x['r']["src_text"], "dest_text": x['r']["dest_text"]})
+        return return_data
+    
+    def get_number_saved_items_from_user(self, user):
+        query = "match (n:User{{username:\"{}\"}})-[:USER_SAVED_ITEM]->(V:SAVED_ITEM) return count(V) as r".format(user)
+
+        r = self.g.run_raw_query(query)
+        results = r[1].records()
+        for x in results:
+            return x["r"]
+
+    def get_test_data(self, user, number, choosenby):
+        saved_count = self.get_number_saved_items_from_user(user)
+        ##entities = self.get_saved_entities(user)
+        arr_entity = []
+        if (choosenby == "random"):
+            if saved_count < number:
+                return self.get_saved_entities(user)
+            query = "MATCH (a:User{{username: \"{}\"}})-[:USER_SAVED_ITEM]->(t) RETURN t as r SKIP {} LIMIT {}".format(user, random.randint(0, saved_count-(number+1)), number)
+            res = self.g.run_raw_query(query)[1].records()
+            return [{"src_lang": x['r']['src_lang'], "dest_lang": x['r']["dest_lang"], "src_text": x['r']["src_text"], "dest_text": x['r']["dest_text"]} for x in res]
 
     def get_eng_meaning(self, e_w):
         return_arr = []
